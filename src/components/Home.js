@@ -37,7 +37,7 @@ const Home = ({ pokemon, moves, abilities, inventory, addToInventory }) => {
       <button className="btn" onClick={addRandomMove}>
         Get a random move
       </button>
-      {newPokemon ? <PokeCard pokemon={newPokemon} /> : ""}
+      {newPokemon ? <PokeCard pokemon={newPokemon} newPokemon={true} /> : ""}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
 
-const PokeCard = ({ pokemon }) => {
+const PokeCard = ({ pokemon, newPokemon }) => {
   return (
     <div
       key={pokemon}
@@ -14,10 +14,9 @@ const PokeCard = ({ pokemon }) => {
       </figure>
       <div className="card-body">
         <h2 className="card-title">{pokemon.name}!</h2>
-        <p>{pokemon.name} has been added to your inventory!</p>
-        {/* <div className="card-actions justify-end">
-          <button className="btn btn-primary">Buy Now</button>
-        </div> */}
+        {newPokemon ? (
+          <p>{pokemon.name} has been added to your inventory!</p>
+        ) : null}
       </div>
     </div>
   );
