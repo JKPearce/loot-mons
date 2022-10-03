@@ -47,7 +47,7 @@ const Nav = () => {
           <li>
             <button
               onClick={(e) =>
-                e.currentTarget.classList
+                e.currentTarget.classList.contains("ACTIVECLASS")
                   ? setThemeIcon("☀️")
                   : setThemeIcon("🌙")
               }
