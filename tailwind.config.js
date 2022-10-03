@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   daisyui: {
-    themes: ["winter", "night"],
+    themes: ["winter", "night", "dracula"],
     styled: true,
     base: true,
     utils: true,
