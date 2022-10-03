@@ -43,6 +43,7 @@ function App() {
       <Routes>
         <Route
           path="/"
+          index
           element={
             <Home
               pokemon={pokemon}

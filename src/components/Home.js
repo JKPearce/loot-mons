@@ -10,9 +10,9 @@ const Home = ({ pokemon, moves, abilities, inventory, addToInventory }) => {
     addToInventory((prevState) => {
       const newArr = [...prevState.pokemon];
       newArr.push(pokemon[num]); //add newest pokemon to the inv array
-      setNewPokemon(pokemon[num]); //add it to display newest pokemon
       return { ...prevState, pokemon: newArr };
     });
+    setNewPokemon(pokemon[num]); //add it to display newest pokemon
   }
 
   function addRandomMove() {
