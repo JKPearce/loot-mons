@@ -7,7 +7,6 @@ const AddTeam = ({ setTeamList, setActive, inventory }) => {
   const [newTeam, setNewTeam] = useState([{}, {}, {}, {}, {}, {}]);
   const [showAddPokemon, setShowAddPokemon] = useState(false);
   const [selectingPokemon, setSelectingPokemon] = useState(true);
-  const [selectedMove, setSelectedMove] = useState([]);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -26,7 +25,6 @@ const AddTeam = ({ setTeamList, setActive, inventory }) => {
       console.log(newTeamArray);
       return newTeamArray;
     });
-    console.log(e.target.value, moveNumber, pokemonTeamPosition);
   }
 
   const moveDropDown = (pokemonTeamPosition) => {
@@ -36,15 +34,21 @@ const AddTeam = ({ setTeamList, setActive, inventory }) => {
       moveListElements.push(
         <select
           onChange={(e) => handleMoveSelected(e, i, pokemonTeamPosition)}
+          value={
+            //Check if there is a move selected already for that pokemon if so display its name
+            newTeam[pokemonTeamPosition].moves[i - 1]
+              ? newTeam[pokemonTeamPosition].moves[i - 1]
+              : `Move ${i}`
+          }
           key={uniqid()}
           className="select select-bordered w-full max-w-xs"
         >
-          <option key={uniqid()} disabled selected>
+          <option key={uniqid()} disabled>
             {`Move ${i}`}
           </option>
           {inventory.moves.map((move) => {
             if (moveListNames.includes(move.name)) {
-              return;
+              return <></>;
             } else {
               moveListNames.push(move.name);
               return (
@@ -85,6 +89,7 @@ const AddTeam = ({ setTeamList, setActive, inventory }) => {
                     <button type="button" onClick={() => () => handleAdd(i)}>
                       <PokeCard pokemon={pokemon} />
                     </button>
+                    {/* sends current value to be used as pokemonTeamPosition */}
                     {moveDropDown(i)}
                   </>
                 ) : (
