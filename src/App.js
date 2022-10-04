@@ -16,6 +16,7 @@ function App() {
     const pokemonData = require("./data/pokedex.json");
     let pokeArray = [];
     for (const pokemon in pokemonData) {
+      //removes user made pokemons and pokemon which have a forme from the array
       if (pokemonData[pokemon].forme || pokemonData[pokemon].num < 0) {
       } else {
         pokeArray.push(pokemonData[pokemon]);

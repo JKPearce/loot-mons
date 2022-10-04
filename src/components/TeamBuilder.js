@@ -11,17 +11,31 @@ const TeamBuilder = ({ inventory }) => {
     //load user created teams into state
   }, []);
 
+  function exportTeam(teamIndex) {
+    console.log(teamList[teamIndex]);
+    //export team to text format able to be used in pokemonshowdown import
+  }
+
   return (
-    <div className="container">
+    <div className="">
       <div>
         {console.log(teamList)}
-        <h3>Teams</h3>
+        <h1 className="text-center text-5xl font-bold">Teams</h1>
 
         {teamList.map((team, i) => {
           return (
-            <div key={uniqid()}>
+            <div key={uniqid()} className="grid grid-cols-3 gap-y-5">
+              <div className="col-span-3 flex items-center justify-center flex-col">
+                <h3 className="text-center text-2xl py-5">Team {i}</h3>
+                <button
+                  onClick={() => exportTeam(i)}
+                  type="button"
+                  className="btn "
+                >
+                  Export
+                </button>
+              </div>
               {team.map((pokemon) => {
-                console.log(pokemon);
                 return (
                   pokemon.added && (
                     <div>
