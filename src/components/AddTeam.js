@@ -85,7 +85,7 @@ const AddTeam = ({ setTeamList, setActive, inventory }) => {
                     setSelectingPokemon={setSelectingPokemon}
                     selectingPokemon={selectingPokemon}
                   />
-                ) : pokemon.num ? (
+                ) : pokemon.added ? (
                   <>
                     <button type="button" onClick={() => handleAdd(i)}>
                       <PokeCard pokemon={pokemon} />

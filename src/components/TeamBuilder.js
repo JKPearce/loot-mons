@@ -20,9 +20,22 @@ const TeamBuilder = ({ inventory }) => {
         {teamList.map((team, i) => {
           return (
             <div key={uniqid()}>
-              {team.map((pokemon) => (
-                <PokeCard key={uniqid()} pokemon={pokemon} />
-              ))}
+              {team.map((pokemon) => {
+                console.log(pokemon);
+                return (
+                  pokemon.added && (
+                    <div>
+                      <PokeCard pokemon={pokemon} />
+                      {pokemon.moves &&
+                        pokemon.moves.map((move) => (
+                          <div>
+                            <p>{move}</p>
+                          </div>
+                        ))}
+                    </div>
+                  )
+                );
+              })}
             </div>
           );
         })}
