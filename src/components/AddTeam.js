@@ -30,7 +30,9 @@ const AddTeam = ({ setTeamList, setActive, inventory }) => {
                     inventory={inventory}
                   />
                 ) : pokemon.name ? (
-                  <PokeCard pokemon={pokemon} />
+                  <button type="button" onClick={() => setShowAddPokemon(i)}>
+                    <PokeCard pokemon={pokemon} />
+                  </button>
                 ) : (
                   <button
                     onClick={() => setShowAddPokemon(i)}
