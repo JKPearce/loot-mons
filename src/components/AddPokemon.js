@@ -9,19 +9,16 @@ const AddPokemon = ({
   id,
   setSelectingPokemon,
   selectingPokemon,
+  pokemon,
 }) => {
-  //   const [newPokemon, setNewPokemon] = useState({
-  //     name: null,
-  //     num: null,
-  //     ability: null,
-  //     moves: [],
-  //   });
-
-  function handleChange(e, pokemon) {
-    console.log(e);
-  }
+  const [moves, setMoves] = useState([]);
 
   useEffect(() => {
+    if (!pokemon.moves) {
+      setMoves([null, null, null, null]);
+    } else {
+      setMoves([...pokemon.moves]);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -32,7 +29,7 @@ const AddPokemon = ({
         name: pokemon.name,
         num: pokemon.num,
         added: true,
-        moves: [null, null, null, null],
+        moves: moves,
       };
       newTeam[id] = newPokemon;
       return newTeam;
@@ -43,6 +40,7 @@ const AddPokemon = ({
 
   return (
     <div className="container flex flex-row flex-wrap ">
+      {console.log(moves)}
       {selectingPokemon &&
         (inventory.pokemon.length !== 0 ? (
           inventory.pokemon.map((pokemon) => (

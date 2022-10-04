@@ -79,14 +79,15 @@ const AddTeam = ({ setTeamList, setActive, inventory }) => {
                 {showAddPokemon === i && selectingPokemon ? (
                   <AddPokemon
                     id={i}
+                    pokemon={pokemon}
                     setNewTeam={setNewTeam}
                     inventory={inventory}
                     setSelectingPokemon={setSelectingPokemon}
                     selectingPokemon={selectingPokemon}
                   />
-                ) : pokemon.added ? (
+                ) : pokemon.num ? (
                   <>
-                    <button type="button" onClick={() => () => handleAdd(i)}>
+                    <button type="button" onClick={() => handleAdd(i)}>
                       <PokeCard pokemon={pokemon} />
                     </button>
                     {/* sends current value to be used as pokemonTeamPosition */}
