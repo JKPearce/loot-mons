@@ -45,6 +45,11 @@ const Nav = () => {
                 <a>Inventory</a>
               </Link>
             </li>
+            <li>
+              <Link to="/team-builder">
+                <a>Build a Team</a>
+              </Link>
+            </li>
           </ul>
         </div>
         <Link to="/">
@@ -61,6 +66,11 @@ const Nav = () => {
           <li>
             <Link to="/inventory">
               <a>Inventory</a>
+            </Link>
+          </li>
+          <li>
+            <Link to="/team-builder">
+              <a>Build a Team</a>
             </Link>
           </li>
         </ul>

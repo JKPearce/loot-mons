@@ -4,6 +4,7 @@ import "./App.css";
 import Home from "./components/Home";
 import Inventory from "./components/Inventory";
 import Nav from "./components/Nav";
+import TeamBuilder from "./components/TeamBuilder";
 
 function App() {
   const [pokemon, setPokemon] = useState([]);
@@ -56,6 +57,10 @@ function App() {
         <Route
           path="/inventory"
           element={<Inventory inventory={inventory} />}
+        />
+        <Route
+          path="/team-builder"
+          element={<TeamBuilder inventory={inventory} />}
         />
       </Routes>
     </>
