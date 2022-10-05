@@ -11,9 +11,28 @@ const TeamBuilder = ({ inventory }) => {
     //load user created teams into state
   }, []);
 
-  function exportTeam(teamIndex) {
-    console.log(teamList[teamIndex]);
+  function exportTeam(team) {
     //export team to text format able to be used in pokemonshowdown import
+    //Export should mimic this format
+    //Bulbasaur @ Choice Band
+    // Ability: Aerilate
+    // EVs: 84 HP / 176 Atk / 196 Def / 52 SpA
+    // - Brick Break
+    // - Drill Run
+    // - Facade
+    // - Ice Fang
+
+    let text = "";
+    team.forEach((pokemon) => {
+      if (!pokemon.name) return;
+      text += `${pokemon.name}\n`;
+      pokemon.moves.forEach((move) => {
+        if (!move) return;
+        text += `- ${move}\n`;
+      });
+    });
+
+    console.log(text);
   }
 
   return (
@@ -27,8 +46,9 @@ const TeamBuilder = ({ inventory }) => {
             <div key={uniqid()} className="grid grid-cols-3 gap-y-5">
               <div className="col-span-3 flex items-center justify-center flex-col">
                 <h3 className="text-center text-2xl py-5">Team {i}</h3>
+
                 <button
-                  onClick={() => exportTeam(i)}
+                  onClick={() => exportTeam(team)}
                   type="button"
                   className="btn "
                 >
@@ -40,6 +60,7 @@ const TeamBuilder = ({ inventory }) => {
                   pokemon.added && (
                     <div>
                       <PokeCard pokemon={pokemon} />
+
                       {pokemon.moves &&
                         pokemon.moves.map((move) => (
                           <div>
