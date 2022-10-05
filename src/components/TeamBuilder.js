@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import AddTeam from "./AddTeam";
 import PokeCard from "./PokeCard";
 import uniqid from "uniqid";
+import { BsClipboardCheck } from "react-icons/bs";
 
 const TeamBuilder = ({ inventory }) => {
   const [teamList, setTeamList] = useState([]);
   const [active, setActive] = useState(false);
+  const [copyText, setCopyText] = useState("Copy");
 
   useEffect(() => {
     //load user created teams into state
@@ -27,40 +29,47 @@ const TeamBuilder = ({ inventory }) => {
       if (!pokemon.name) return;
       text += `${pokemon.name}\n`;
       pokemon.moves.forEach((move) => {
-        if (!move) return;
+        if (!move) {
+          text += `- \n`;
+          return;
+        }
         text += `- ${move}\n`;
       });
+      text += `\n`;
     });
 
+    navigator.clipboard.writeText(text);
+    setCopyText("Copied");
+    setTimeout(() => {
+      setCopyText("Copy");
+    }, 2000);
     console.log(text);
   }
 
   return (
     <div className="">
       <div>
-        {console.log(teamList)}
         <h1 className="text-center text-5xl font-bold">Teams</h1>
-
         {teamList.map((team, i) => {
           return (
             <div key={uniqid()} className="grid grid-cols-3 gap-y-5">
-              <div className="col-span-3 flex items-center justify-center flex-col">
-                <h3 className="text-center text-2xl py-5">Team {i}</h3>
-
-                <button
-                  onClick={() => exportTeam(team)}
-                  type="button"
-                  className="btn "
-                >
-                  Export
-                </button>
+              <div className=" py-5 col-span-3 flex items-center justify-center ">
+                <h3 className="text-center text-2xl">Team {i}</h3>
+                <div className="tooltip" data-tip={copyText}>
+                  <button
+                    onClick={() => exportTeam(team)}
+                    type="button"
+                    className="btn btn-block btn-ghost"
+                  >
+                    <BsClipboardCheck />
+                  </button>
+                </div>
               </div>
               {team.map((pokemon) => {
                 return (
                   pokemon.added && (
                     <div>
                       <PokeCard pokemon={pokemon} />
-
                       {pokemon.moves &&
                         pokemon.moves.map((move) => (
                           <div>
@@ -74,7 +83,6 @@ const TeamBuilder = ({ inventory }) => {
             </div>
           );
         })}
-
         {active ? (
           <AddTeam
             setTeamList={setTeamList}
