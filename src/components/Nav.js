@@ -36,19 +36,13 @@ const Nav = () => {
             className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-neutral text-neutral-content rounded-box w-52"
           >
             <li>
-              <Link to="/">
-                <a>Home</a>
-              </Link>
+              <Link to="/">Home</Link>
             </li>
             <li>
-              <Link to="/inventory">
-                <a>Inventory</a>
-              </Link>
+              <Link to="/inventory">Inventory</Link>
             </li>
             <li>
-              <Link to="/team-builder">
-                <a>Build a Team</a>
-              </Link>
+              <Link to="/team-builder">Build a Team</Link>
             </li>
           </ul>
         </div>
@@ -59,19 +53,13 @@ const Nav = () => {
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal p-0">
           <li>
-            <Link to="/">
-              <a>Home</a>
-            </Link>
+            <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/inventory">
-              <a>Inventory</a>
-            </Link>
+            <Link to="/inventory">Inventory</Link>
           </li>
           <li>
-            <Link to="/team-builder">
-              <a>Build a Team</a>
-            </Link>
+            <Link to="/team-builder">Build a Team</Link>
           </li>
         </ul>
       </div>
@@ -89,40 +77,6 @@ const Nav = () => {
         </button>
       </div>
     </div>
-    // <nav className="w-full navbar bg-base-300">
-    //   <div className="flex-1">
-    //     <Link to="/">
-    //       <span className="btn btn-ghost normal-case text-xl">Loot Mons</span>
-    //     </Link>
-    //   </div>
-    //   <div className="flex-none">
-    //     <ul className="menu menu-horizontal p-0">
-    // <li>
-    //   <Link to="/">
-    //     <button className="btn btn-link btn-sm">Home</button>
-    //   </Link>
-    // </li>
-    // <li>
-    //   <Link to="/inventory">
-    //     <button className="btn btn-link btn-sm">Inventory</button>
-    //   </Link>
-    // </li>
-    // <li>
-    //         <button
-    //           onClick={(e) =>
-    //             e.currentTarget.classList.contains("ACTIVECLASS")
-    //               ? setThemeIcon("☀️")
-    //               : setThemeIcon("🌙")
-    //           }
-    //           data-toggle-theme="winter,night"
-    //           data-act-class="ACTIVECLASS"
-    //         >
-    //           {themeIcon}
-    //         </button>
-    //       </li>
-    //     </ul>
-    //   </div>
-    // </nav>
   );
 };
 
