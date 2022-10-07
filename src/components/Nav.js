@@ -70,7 +70,7 @@ const Nav = () => {
               ? setThemeIcon("☀️")
               : setThemeIcon("🌙")
           }
-          data-toggle-theme="winter,dracula"
+          data-toggle-theme="winter,night"
           data-act-class="ACTIVECLASS"
         >
           {themeIcon}

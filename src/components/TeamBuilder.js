@@ -49,7 +49,7 @@ const TeamBuilder = ({ inventory }) => {
   return (
     <div className="">
       <div>
-        <h1 className="text-center text-5xl font-bold">Teams</h1>
+        <h1 className="p-4 text-center text-5xl font-bold">Teams</h1>
         {teamList.map((team, i) => {
           return (
             <div key={uniqid()} className="grid grid-cols-3 gap-y-5">

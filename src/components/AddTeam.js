@@ -5,8 +5,9 @@ import uniqid from "uniqid";
 
 const AddTeam = ({ setTeamList, setActive, inventory }) => {
   const [newTeam, setNewTeam] = useState([{}, {}, {}, {}, {}, {}]);
-  const [showAddPokemon, setShowAddPokemon] = useState(false);
-  const [selectingPokemon, setSelectingPokemon] = useState(true);
+  const [teamPosition, setTeamPosition] = useState(false);
+  const [showPokemonModal, setShowPokemonModal] = useState(true);
+  // const [showInventoryModal, setShowInventoryModal] = useState(false);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -27,6 +28,8 @@ const AddTeam = ({ setTeamList, setActive, inventory }) => {
     });
   }
 
+  //This function gets already selected moves and
+  //creates a dropdown box with the moves still selected
   const moveDropDown = (pokemonTeamPosition) => {
     let moveListElements = [];
     for (let i = 1; i < 5; i++) {
@@ -65,25 +68,25 @@ const AddTeam = ({ setTeamList, setActive, inventory }) => {
   };
 
   function handleAdd(i) {
-    setShowAddPokemon(i);
-    setSelectingPokemon(true);
+    setTeamPosition(i);
+    setShowPokemonModal(true);
   }
 
   return (
     <>
       <div className="container">
         <form onSubmit={handleSubmit}>
-          <div className="flex flex-row gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 place-content-center">
             {newTeam.map((pokemon, i) => (
-              <div className="" key={uniqid()}>
-                {showAddPokemon === i && selectingPokemon ? (
+              <div className="w-40 place-items-center" key={uniqid()}>
+                {teamPosition === i && showPokemonModal ? (
                   <AddPokemon
                     id={i}
                     pokemon={pokemon}
                     setNewTeam={setNewTeam}
                     inventory={inventory}
-                    setSelectingPokemon={setSelectingPokemon}
-                    selectingPokemon={selectingPokemon}
+                    setShowPokemonModal={setShowPokemonModal}
+                    selectingPokemon={showPokemonModal}
                   />
                 ) : pokemon.added ? (
                   <>
@@ -97,7 +100,7 @@ const AddTeam = ({ setTeamList, setActive, inventory }) => {
                   <button
                     onClick={() => handleAdd(i)}
                     type="button"
-                    className="btn"
+                    className="btn btn-lg btn-accent"
                   >
                     +
                   </button>
