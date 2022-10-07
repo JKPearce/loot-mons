@@ -52,8 +52,11 @@ const TeamBuilder = ({ inventory }) => {
         <h1 className="p-4 text-center text-5xl font-bold">Teams</h1>
         {teamList.map((team, i) => {
           return (
-            <div key={uniqid()} className="grid grid-cols-3 gap-y-5">
-              <div className=" py-5 col-span-3 flex items-center justify-center ">
+            <div
+              key={uniqid()}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-y-5"
+            >
+              <div className=" py-5 col-span-1 sm:col-span-3 flex items-center justify-center ">
                 <h3 className="text-center text-2xl">Team {i}</h3>
                 <div className="tooltip" data-tip={copyText}>
                   <button
@@ -68,11 +71,11 @@ const TeamBuilder = ({ inventory }) => {
               {team.map((pokemon) => {
                 return (
                   pokemon.added && (
-                    <div>
+                    <div className="p-5">
                       <PokeCard pokemon={pokemon} />
                       {pokemon.moves &&
                         pokemon.moves.map((move) => (
-                          <div>
+                          <div className="mt-4">
                             <p>{move}</p>
                           </div>
                         ))}

@@ -48,7 +48,7 @@ const AddPokemon = ({
     >
       <h3 className="font-bold text-lg">Pokemon Inventory</h3>
       <div className="modal-box min-w-full">
-        <div className="grid gap-6 grid-cols-6 sm:grid-cols-3">
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-6">
           {inventory.pokemon.length !== 0 ? (
             inventory.pokemon.map((pokemon) => (
               //display the inventory here

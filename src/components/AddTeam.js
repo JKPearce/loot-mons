@@ -76,9 +76,12 @@ const AddTeam = ({ setTeamList, setActive, inventory }) => {
     <>
       <div className="container">
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 place-content-center">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 place-content-center">
             {newTeam.map((pokemon, i) => (
-              <div className="w-40 place-items-center" key={uniqid()}>
+              <div
+                className="flex flex-col place-items-center p-5"
+                key={uniqid()}
+              >
                 {teamPosition === i && showPokemonModal ? (
                   <AddPokemon
                     id={i}
