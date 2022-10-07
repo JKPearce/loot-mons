@@ -3,27 +3,23 @@ import AddPokemon from "./AddPokemon";
 import PokeCard from "./PokeCard";
 import uniqid from "uniqid";
 
-const AddTeam = ({ setTeamList, setActive, inventory }) => {
+const AddTeam = ({ setTeamList, teamList, setDisplayAddTeam, inventory }) => {
   const [newTeam, setNewTeam] = useState([{}, {}, {}, {}, {}, {}]);
   const [teamPosition, setTeamPosition] = useState(false);
   const [showPokemonModal, setShowPokemonModal] = useState(true);
-  // const [showInventoryModal, setShowInventoryModal] = useState(false);
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log("submitted", e);
-    //TODO: get all the info from the form and save in state
-    console.log(newTeam);
     setTeamList((prevState) => [...prevState, newTeam]);
-
-    setActive(false);
+    console.log(...teamList);
+    localStorage.setItem("teams", [JSON.stringify([...teamList, newTeam])]);
+    setDisplayAddTeam(false);
   }
 
   function handleMoveSelected(e, moveNumber, pokemonTeamPosition) {
     setNewTeam((prevState) => {
       const newTeamArray = [...prevState];
       newTeamArray[pokemonTeamPosition].moves[moveNumber - 1] = e.target.value;
-      console.log(newTeamArray);
       return newTeamArray;
     });
   }
@@ -111,6 +107,13 @@ const AddTeam = ({ setTeamList, setActive, inventory }) => {
               </div>
             ))}
           </div>
+          <button
+            className="btn btn-error"
+            onClick={() => setDisplayAddTeam(false)}
+            type="button"
+          >
+            Cancel
+          </button>
           <input
             className="btn btn-success"
             type={"submit"}

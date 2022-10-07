@@ -57,6 +57,7 @@ const AddPokemon = ({
                 onClick={() => {
                   handleClick(pokemon);
                 }}
+                key={uniqid()}
               >
                 <PokeCard key={uniqid()} pokemon={pokemon} />
               </button>

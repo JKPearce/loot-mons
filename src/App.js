@@ -36,6 +36,10 @@ function App() {
     fetch("https://pokeapi.co/api/v2/ability/?limit=100000&offset=0")
       .then((response) => response.json())
       .then((data) => setAbilities(data.results));
+
+    if (localStorage.getItem("inventory")) {
+      addToInventory(JSON.parse(localStorage.getItem("inventory")));
+    }
   }, []);
 
   return (

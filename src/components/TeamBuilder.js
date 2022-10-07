@@ -6,11 +6,13 @@ import { BsClipboardCheck } from "react-icons/bs";
 
 const TeamBuilder = ({ inventory }) => {
   const [teamList, setTeamList] = useState([]);
-  const [active, setActive] = useState(false);
+  const [displayAddTeam, setDisplayAddTeam] = useState(false);
   const [copyText, setCopyText] = useState("Copy");
 
   useEffect(() => {
-    //load user created teams into state
+    if (localStorage.getItem("teams")) {
+      setTeamList(JSON.parse(localStorage.getItem("teams")));
+    }
   }, []);
 
   function exportTeam(team) {
@@ -43,12 +45,11 @@ const TeamBuilder = ({ inventory }) => {
     setTimeout(() => {
       setCopyText("Copy");
     }, 2000);
-    console.log(text);
   }
 
   return (
     <div className="">
-      <div>
+      <div className="flex flex-col text-center gap-10">
         <h1 className="p-4 text-center text-5xl font-bold">Teams</h1>
         {teamList.map((team, i) => {
           return (
@@ -71,11 +72,11 @@ const TeamBuilder = ({ inventory }) => {
               {team.map((pokemon) => {
                 return (
                   pokemon.added && (
-                    <div className="p-5">
-                      <PokeCard pokemon={pokemon} />
+                    <div key={uniqid()} className="p-5">
+                      <PokeCard key={uniqid()} pokemon={pokemon} />
                       {pokemon.moves &&
                         pokemon.moves.map((move) => (
-                          <div className="mt-4">
+                          <div key={uniqid()} className="mt-4">
                             <p>{move}</p>
                           </div>
                         ))}
@@ -86,14 +87,15 @@ const TeamBuilder = ({ inventory }) => {
             </div>
           );
         })}
-        {active ? (
+        {displayAddTeam ? (
           <AddTeam
             setTeamList={setTeamList}
-            setActive={setActive}
+            teamList={teamList}
+            setDisplayAddTeam={setDisplayAddTeam}
             inventory={inventory}
           />
         ) : (
-          <button className="btn" onClick={() => setActive(true)}>
+          <button className="btn m-5" onClick={() => setDisplayAddTeam(true)}>
             Add new Team
           </button>
         )}

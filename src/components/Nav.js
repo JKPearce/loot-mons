@@ -47,7 +47,9 @@ const Nav = () => {
           </ul>
         </div>
         <Link to="/">
-          <a className="btn btn-ghost normal-case text-xl">Loot-Mons</a>
+          <button className="btn btn-ghost normal-case text-xl">
+            Loot-Mons
+          </button>
         </Link>
       </div>
       <div className="navbar-center hidden lg:flex">

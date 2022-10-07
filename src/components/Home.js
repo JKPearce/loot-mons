@@ -15,6 +15,7 @@ const Home = ({ pokemon, moves, abilities, inventory, addToInventory }) => {
     });
     setNewPokemon(pokemon[num]); //add it to display newest pokemon
     setNewMove(null);
+    localStorage.setItem("inventory", JSON.stringify(inventory));
   }
 
   function addRandomMove() {
@@ -27,6 +28,7 @@ const Home = ({ pokemon, moves, abilities, inventory, addToInventory }) => {
     });
     setNewMove(moves[num]);
     setNewPokemon(null);
+    localStorage.setItem("inventory", JSON.stringify(inventory));
   }
 
   function randomNumber(number) {
