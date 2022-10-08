@@ -7,14 +7,28 @@ import Nav from "./components/Nav";
 import TeamBuilder from "./components/TeamBuilder";
 
 function App() {
+  //credit cost of opening loot boxes
+  const POKEMON_COST = 100;
+  const ABILITY_COST = 100;
+  const MOVE_COST = 50;
+  const NEW_USER_CREDIT_AMOUNT = 1000;
+
   const [pokemon, setPokemon] = useState([]);
   const [moves, setMoves] = useState([]);
   const [abilities, setAbilities] = useState([]);
-  const [inventory, addToInventory] = useState({ pokemon: [], moves: [] }); // TODO usestate set to localsave OR empty array
+  const [inventory, addToInventory] = useState({
+    pokemon: [],
+    moves: [],
+    abilities: [],
+    items: [],
+    credits: NEW_USER_CREDIT_AMOUNT,
+  });
 
-  useEffect(() => {
+  function initPokemonData() {
+    //data is sourced from https://play.pokemonshowdown.com/data/pokedex.json
     const pokemonData = require("./data/pokedex.json");
-    let pokeArray = [];
+
+    const pokeArray = [];
     for (const pokemon in pokemonData) {
       //removes user made pokemons and pokemon which have a forme from the array
       if (pokemonData[pokemon].forme || pokemonData[pokemon].num < 0) {
@@ -22,21 +36,30 @@ function App() {
         pokeArray.push(pokemonData[pokemon]);
       }
     }
-    setPokemon(pokeArray);
+    return pokeArray;
+  }
 
+  function initMoveData() {
+    //data is sourced from https://play.pokemonshowdown.com/data/moves.json
     const moveData = require("./data/moves.json");
-    let moveArray = [];
-    for (const move in moveData) {
-      moveArray.push(moveData[move]);
-    }
 
-    setMoves(moveArray);
+    const moves = [];
+    for (const move in moveData) {
+      moves.push(moveData[move]);
+    }
+    return moves;
+  }
+
+  useEffect(() => {
+    setPokemon(initPokemonData());
+    setMoves(initMoveData());
 
     //?limit=100000&offset=0 is needed because pokeapi normally returns 20 results
     fetch("https://pokeapi.co/api/v2/ability/?limit=100000&offset=0")
       .then((response) => response.json())
       .then((data) => setAbilities(data.results));
 
+    //get existing user data
     if (localStorage.getItem("inventory")) {
       addToInventory(JSON.parse(localStorage.getItem("inventory")));
     }
