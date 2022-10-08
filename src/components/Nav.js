@@ -44,6 +44,9 @@ const Nav = () => {
             <li>
               <Link to="/team-builder">Build a Team</Link>
             </li>
+            <li>
+              <Link to="/submit-replay">Submit Replay</Link>
+            </li>
           </ul>
         </div>
         <Link to="/">
@@ -62,6 +65,9 @@ const Nav = () => {
           </li>
           <li>
             <Link to="/team-builder">Build a Team</Link>
+          </li>
+          <li>
+            <Link to="/submit-replay">Submit Replay</Link>
           </li>
         </ul>
       </div>

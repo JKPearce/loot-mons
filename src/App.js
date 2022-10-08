@@ -4,6 +4,7 @@ import "./App.css";
 import Home from "./components/Home";
 import Inventory from "./components/Inventory";
 import Nav from "./components/Nav";
+import SubmitReplay from "./components/SubmitReplay";
 import TeamBuilder from "./components/TeamBuilder";
 import { NEW_USER_CREDIT_AMOUNT } from "./helpers/global";
 
@@ -14,6 +15,7 @@ function App() {
     abilities: [],
     items: [],
   });
+
   const [inventory, addToInventory] = useState({
     pokemon: [],
     moves: [],
@@ -95,6 +97,7 @@ function App() {
           path="/team-builder"
           element={<TeamBuilder inventory={inventory} />}
         />
+        <Route path="/submit-replay" element={<SubmitReplay />} />
       </Routes>
     </>
   );
