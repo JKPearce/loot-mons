@@ -80,6 +80,15 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
         <button className="btn btn-md" onClick={addCredits}>
           Get 1000 credits
         </button>
+        <button
+          className="btn btn-sm btn-warning"
+          onClick={() => {
+            localStorage.clear();
+            window.location.reload();
+          }}
+        >
+          Delete Profile
+        </button>
       </div>
       <div className="absolute top-0 right-0">Credits: {inventory.credits}</div>
     </div>
