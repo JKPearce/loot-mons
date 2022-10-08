@@ -49,7 +49,7 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
   }
 
   return (
-    <div className="relative container flex flex-col place-items-center">
+    <div className="relative flex flex-col place-items-center p-5">
       <h1 className="p-4 text-center text-5xl font-bold ">Loot-Mons</h1>
       <div className="h-60 w-40 ">
         {newItem ? (
@@ -90,7 +90,9 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
           Delete Profile
         </button>
       </div>
-      <div className="absolute top-0 right-0">Credits: {inventory.credits}</div>
+      <div className="absolute top-2 right-10">
+        Credits: {inventory.credits}
+      </div>
     </div>
   );
 };
