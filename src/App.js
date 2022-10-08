@@ -5,14 +5,9 @@ import Home from "./components/Home";
 import Inventory from "./components/Inventory";
 import Nav from "./components/Nav";
 import TeamBuilder from "./components/TeamBuilder";
+import { NEW_USER_CREDIT_AMOUNT } from "./helpers/global";
 
 function App() {
-  //credit cost of opening loot boxes
-  const POKEMON_COST = 100;
-  const ABILITY_COST = 100;
-  const MOVE_COST = 50;
-  const NEW_USER_CREDIT_AMOUNT = 1000;
-
   const [pokemon, setPokemon] = useState([]);
   const [moves, setMoves] = useState([]);
   const [abilities, setAbilities] = useState([]);
