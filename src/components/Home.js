@@ -8,7 +8,7 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
 
   useEffect(() => {
     localStorage.setItem("inventory", JSON.stringify(inventory));
-    console.log(inventory);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newItem]);
 
   function openBox(boxType) {
