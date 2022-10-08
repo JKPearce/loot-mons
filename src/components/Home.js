@@ -1,58 +1,87 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { PRICE } from "../helpers/global";
 import PokeCard from "./PokeCard";
 
-const Home = ({ pokemon, moves, abilities, inventory, addToInventory }) => {
-  const [newPokemon, setNewPokemon] = useState(null);
-  const [newMove, setNewMove] = useState(null);
+const Home = ({ pokedex, inventory, addToInventory }) => {
+  const [newItem, setNewItem] = useState(null);
+  const [creditError, setCreditError] = useState(false);
 
-  function addRandomPokemon() {
-    const num = randomNumber(pokemon.length);
+  useEffect(() => {
+    localStorage.setItem("inventory", JSON.stringify(inventory));
+    console.log(inventory);
+  }, [newItem]);
+
+  function openBox(boxType) {
+    if (inventory.credits < PRICE[boxType]) {
+      setNewItem(null);
+      setCreditError(true);
+      return;
+    } else {
+      setCreditError(false);
+    }
+
+    const num = randomNumber(pokedex[boxType].length);
+    const newItem = pokedex[boxType][num];
+    setNewItem([boxType, newItem]);
 
     addToInventory((prevState) => {
-      const newArr = [...prevState.pokemon];
-      newArr.push(pokemon[num]); //add newest pokemon to the inv array
-      return { ...prevState, pokemon: newArr };
+      const newArr = [...prevState[boxType]];
+      newArr.push(newItem);
+
+      return {
+        ...prevState,
+        [boxType]: newArr,
+        credits: inventory.credits - PRICE[boxType],
+      };
     });
-    setNewPokemon(pokemon[num]); //add it to display newest pokemon
-    setNewMove(null);
-    localStorage.setItem("inventory", JSON.stringify(inventory));
   }
 
-  function addRandomMove() {
-    const num = randomNumber(moves.length);
-
+  function addCredits() {
     addToInventory((prevState) => {
-      const newArr = [...prevState.moves];
-      newArr.push(moves[num]);
-      return { ...prevState, moves: newArr };
+      return { ...prevState, credits: inventory.credits + 1000 };
     });
-    setNewMove(moves[num]);
-    setNewPokemon(null);
     localStorage.setItem("inventory", JSON.stringify(inventory));
+    setNewItem(null);
   }
 
   function randomNumber(number) {
     return Math.floor(Math.random() * number);
   }
+
   return (
-    <div className="container grid grid-cols-3 place-items-center">
-      <h1 className="p-4 text-center text-5xl font-bold col-span-3">
-        Loot-Mons
-      </h1>
-      <div className="col-span-3 h-60 w-40 ">
-        {newPokemon && <PokeCard pokemon={newPokemon} newPokemon={true} />}
-        {newMove && (
-          <p className="my-auto">
-            <b>{newMove.name}</b> Has been added to your inventory!
-          </p>
+    <div className="relative container flex flex-col place-items-center">
+      <h1 className="p-4 text-center text-5xl font-bold ">Loot-Mons</h1>
+      <div className="h-60 w-40 ">
+        {newItem ? (
+          newItem[0] === "pokemon" ? (
+            <PokeCard pokemon={newItem[1]} newPokemon={true} />
+          ) : (
+            <div>
+              <b>{newItem[1].name}</b> has been added to your inventory!
+            </div>
+          )
+        ) : null}
+        {creditError && (
+          <div className="text-error font-bold text-4xl">
+            You do not have enough credits!
+          </div>
         )}
       </div>
-      <button className="btn" onClick={addRandomPokemon}>
-        Get a random pokemon
-      </button>
-      <button className="btn" onClick={addRandomMove}>
-        Get a random move
-      </button>
+      <div className="flex gap-4 flex-col">
+        <button className="btn btn-md" onClick={() => openBox("pokemon")}>
+          Open Pokemon Box ({PRICE.pokemon} Credits)
+        </button>
+        <button className="btn btn-md" onClick={() => openBox("moves")}>
+          Open Move Box ({PRICE.moves} Credits)
+        </button>
+        <button className="btn btn-md" onClick={() => openBox("abilities")}>
+          Open Ability Box ({PRICE.abilities} Credits)
+        </button>
+        <button className="btn btn-md" onClick={addCredits}>
+          Get 1000 credits
+        </button>
+      </div>
+      <div className="absolute top-0 right-0">Credits: {inventory.credits}</div>
     </div>
   );
 };

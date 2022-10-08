@@ -8,9 +8,12 @@ import TeamBuilder from "./components/TeamBuilder";
 import { NEW_USER_CREDIT_AMOUNT } from "./helpers/global";
 
 function App() {
-  const [pokemon, setPokemon] = useState([]);
-  const [moves, setMoves] = useState([]);
-  const [abilities, setAbilities] = useState([]);
+  const [pokedex, setPokedex] = useState({
+    pokemon: [],
+    moves: [],
+    abilities: [],
+    items: [],
+  });
   const [inventory, addToInventory] = useState({
     pokemon: [],
     moves: [],
@@ -46,13 +49,22 @@ function App() {
   }
 
   useEffect(() => {
-    setPokemon(initPokemonData());
-    setMoves(initMoveData());
+    setPokedex({
+      pokemon: initPokemonData(),
+      moves: initMoveData(),
+      abilities: [],
+      items: [],
+    });
 
     //?limit=100000&offset=0 is needed because pokeapi normally returns 20 results
     fetch("https://pokeapi.co/api/v2/ability/?limit=100000&offset=0")
       .then((response) => response.json())
-      .then((data) => setAbilities(data.results));
+      .then((data) => {
+        const abilityData = data.results;
+        setPokedex((prevState) => {
+          return { ...prevState, abilities: abilityData };
+        });
+      });
 
     //get existing user data
     if (localStorage.getItem("inventory")) {
@@ -69,9 +81,7 @@ function App() {
           path="/"
           element={
             <Home
-              pokemon={pokemon}
-              moves={moves}
-              abilities={abilities}
+              pokedex={pokedex}
               inventory={inventory}
               addToInventory={addToInventory}
             />
