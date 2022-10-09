@@ -110,7 +110,15 @@ function App() {
             />
           }
         />
-        <Route path="/submit-replay" element={<SubmitReplay />} />
+        <Route
+          path="/submit-replay"
+          element={
+            <SubmitReplay
+              inventory={inventory}
+              addToInventory={addToInventory}
+            />
+          }
+        />
       </Routes>
     </>
   );

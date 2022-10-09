@@ -16,7 +16,6 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
 
   useEffect(() => {
     if (newItem) {
-      console.log(newItem);
       localStorage.setItem("inventory", JSON.stringify(inventory));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
