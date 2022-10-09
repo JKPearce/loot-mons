@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { PRICE } from "../helpers/global";
 import PokeCard from "./PokeCard";
+import uniqid from "uniqid";
 
 const Home = ({ pokedex, inventory, addToInventory }) => {
-  const [newItem, setNewItem] = useState(null);
+  const [newItem, setNewItem] = useState();
   const [creditError, setCreditError] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem("inventory", JSON.stringify(inventory));
+    if (newItem) {
+      console.log(newItem);
+      localStorage.setItem("inventory", JSON.stringify(inventory));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newItem]);
 
@@ -40,27 +44,45 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
     addToInventory((prevState) => {
       return { ...prevState, credits: inventory.credits + 1000 };
     });
-    localStorage.setItem("inventory", JSON.stringify(inventory));
-    setNewItem(null);
+    //this is just to run the useEffect function to update localstorage
+    setNewItem(["credits", { name: "Credits!", id: uniqid() }]);
   }
 
   function randomNumber(number) {
     return Math.floor(Math.random() * number);
   }
 
+  function renderNewItem() {
+    if (newItem) {
+      if (newItem[0] === "pokemon") {
+        return <PokeCard pokemon={newItem[1]} newPokemon={true} />;
+      } else {
+        return (
+          <div>
+            <b>{newItem[1].name}</b> has been added to your inventory!
+          </div>
+        );
+      }
+    } else {
+      return null;
+    }
+  }
+
   return (
     <div className="relative flex flex-col place-items-center p-5">
       <h1 className="p-4 text-center text-5xl font-bold ">Loot-Mons</h1>
       <div className="h-60 w-40 ">
-        {newItem ? (
+        {renderNewItem()}
+        {/* {newItem ? (
+          newItem[0] ?
           newItem[0] === "pokemon" ? (
             <PokeCard pokemon={newItem[1]} newPokemon={true} />
           ) : (
             <div>
               <b>{newItem[1].name}</b> has been added to your inventory!
             </div>
-          )
-        ) : null}
+          ) :
+        ) : null} */}
         {creditError && (
           <div className="text-error font-bold text-4xl">
             You do not have enough credits!

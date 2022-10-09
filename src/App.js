@@ -9,6 +9,8 @@ import TeamBuilder from "./components/TeamBuilder";
 import { NEW_USER_CREDIT_AMOUNT } from "./helpers/global";
 
 function App() {
+  const [teamList, setTeamList] = useState([]);
+
   const [pokedex, setPokedex] = useState({
     pokemon: [],
     moves: [],
@@ -50,27 +52,32 @@ function App() {
     return moves;
   }
 
-  useEffect(() => {
-    setPokedex({
-      pokemon: initPokemonData(),
-      moves: initMoveData(),
-      abilities: [],
-      items: [],
-    });
-
-    //?limit=100000&offset=0 is needed because pokeapi normally returns 20 results
-    fetch("https://pokeapi.co/api/v2/ability/?limit=100000&offset=0")
+  async function initAbilityData() {
+    //?limit=100000&offset=0 is needed because default limit is like 50
+    const abilities = await fetch(
+      "https://pokeapi.co/api/v2/ability/?limit=100000&offset=0"
+    )
       .then((response) => response.json())
-      .then((data) => {
-        const abilityData = data.results;
-        setPokedex((prevState) => {
-          return { ...prevState, abilities: abilityData };
-        });
+      .then((data) => data.results);
+    return abilities;
+  }
+
+  useEffect(() => {
+    (async () => {
+      setPokedex({
+        pokemon: initPokemonData(),
+        moves: initMoveData(),
+        abilities: await initAbilityData(),
+        items: [],
       });
+    })();
 
     //get existing user data
     if (localStorage.getItem("inventory")) {
       addToInventory(JSON.parse(localStorage.getItem("inventory")));
+    }
+    if (localStorage.getItem("teams")) {
+      setTeamList(JSON.parse(localStorage.getItem("teams")));
     }
   }, []);
 
@@ -94,8 +101,14 @@ function App() {
           element={<Inventory inventory={inventory} />}
         />
         <Route
-          path="/team-builder"
-          element={<TeamBuilder inventory={inventory} />}
+          path="/teams"
+          element={
+            <TeamBuilder
+              inventory={inventory}
+              teamList={teamList}
+              setTeamList={setTeamList}
+            />
+          }
         />
         <Route path="/submit-replay" element={<SubmitReplay />} />
       </Routes>

@@ -1,19 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import AddTeam from "./AddTeam";
 import PokeCard from "./PokeCard";
 import uniqid from "uniqid";
 import { BsClipboardCheck } from "react-icons/bs";
 
-const TeamBuilder = ({ inventory }) => {
-  const [teamList, setTeamList] = useState([]);
+const TeamBuilder = ({ inventory, teamList, setTeamList }) => {
   const [displayAddTeam, setDisplayAddTeam] = useState(false);
   const [copyText, setCopyText] = useState("Copy");
-
-  useEffect(() => {
-    if (localStorage.getItem("teams")) {
-      setTeamList(JSON.parse(localStorage.getItem("teams")));
-    }
-  }, []);
 
   function exportTeam(team) {
     //export team to text format able to be used in pokemonshowdown import

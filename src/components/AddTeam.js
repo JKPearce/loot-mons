@@ -11,7 +11,6 @@ const AddTeam = ({ setTeamList, teamList, setDisplayAddTeam, inventory }) => {
   function handleSubmit(e) {
     e.preventDefault();
     setTeamList((prevState) => [...prevState, newTeam]);
-    console.log(...teamList);
     localStorage.setItem("teams", [JSON.stringify([...teamList, newTeam])]);
     setDisplayAddTeam(false);
   }

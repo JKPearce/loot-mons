@@ -19,20 +19,25 @@ const SubmitReplay = () => {
   }
 
   function testButton() {
+    console.log(replayData);
     const replayLog = replayData.log;
     //uses positive lookahead to find "player|p1|" or p2| and saves the next word
-    const playerNameRegex = /(?<=(player\|p+[0-9]+\|))(\w+)/gi;
-    const playerNames = replayLog.match(playerNameRegex);
-    const p1 = playerNames[0];
-    const p2 = playerNames[1];
+    // const playerNameRegex = /(?<=(player\|p+[0-9]+\|))(\w+)/gi;
+    // const playerNames = replayLog.match(playerNameRegex);
+    const p1 = replayData.p1;
+    const p2 = replayData.p2;
     console.log("player1: ", p1, " player2: ", p2);
 
     //cross reference player name with p1 or p2 to determine team list
     //then compare team list to all of teams on user profile
     //and if they match then grant user credits for win or loss
-    const teamRegex = /(?<=(poke\|p1+\|))(\w+)/gi;
-    const team = replayLog.match(teamRegex);
-    console.log("Team", team);
+    const p1TeamRegex = /(?<=(poke\|p1+\|))(\w+)/gi;
+    const p1Team = replayLog.match(p1TeamRegex);
+    console.log(p1, " team is: ", p1Team);
+
+    const p2TeamRegex = /(?<=(poke\|p2+\|))(\w+)/gi;
+    const p2Team = replayLog.match(p2TeamRegex);
+    console.log(p2, " team is: ", p2Team);
 
     const winnerRegex = /(?<=win\|)(\w+)/gi;
     const winner = replayLog.match(winnerRegex);
