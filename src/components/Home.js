@@ -45,7 +45,7 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
       return { ...prevState, credits: inventory.credits + 1000 };
     });
     //this is just to run the useEffect function to update localstorage
-    setNewItem(["credits", { name: "Credits!", id: uniqid() }]);
+    setNewItem(["credits", { name: "LootCreds!", id: uniqid() }]);
   }
 
   function randomNumber(number) {
@@ -85,22 +85,22 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
         ) : null} */}
         {creditError && (
           <div className="text-error font-bold text-4xl">
-            You do not have enough credits!
+            You do not have enough LootCreds!
           </div>
         )}
       </div>
       <div className="flex gap-4 flex-col">
         <button className="btn btn-md" onClick={() => openBox("pokemon")}>
-          Open Pokemon Box ({PRICE.pokemon} Credits)
+          Open Pokemon Box ({PRICE.pokemon} LootCreds)
         </button>
         <button className="btn btn-md" onClick={() => openBox("moves")}>
-          Open Move Box ({PRICE.moves} Credits)
+          Open Move Box ({PRICE.moves} LootCreds)
         </button>
         <button className="btn btn-md" onClick={() => openBox("abilities")}>
-          Open Ability Box ({PRICE.abilities} Credits)
+          Open Ability Box ({PRICE.abilities} LootCreds)
         </button>
         <button className="btn btn-md" onClick={addCredits}>
-          Get 1000 credits
+          Get 1000 LootCreds
         </button>
         <button
           className="btn btn-sm btn-warning"
@@ -113,7 +113,7 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
         </button>
       </div>
       <div className="absolute top-2 right-10">
-        Credits: {inventory.credits}
+        LootCreds: {inventory.credits}
       </div>
     </div>
   );
