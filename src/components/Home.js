@@ -6,7 +6,7 @@ import {
 } from "../helpers/global";
 import PokeCard from "./PokeCard";
 import uniqid from "uniqid";
-import { add, intlFormatDistance, parseJSON } from "date-fns";
+import { add, formatDistanceToNowStrict, parseJSON, isPast } from "date-fns";
 
 const Home = ({ pokedex, inventory, addToInventory }) => {
   const [newItem, setNewItem] = useState();
@@ -25,14 +25,14 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
     const timer = setInterval(() => {
       if (localStorage.getItem("timeAvailable")) {
         const timeAvailable = parseJSON(localStorage.getItem("timeAvailable"));
-        const distance = intlFormatDistance(timeAvailable, new Date());
+        const distance = formatDistanceToNowStrict(timeAvailable, {
+          unit: "minute",
+        });
 
-        //if the returned string format contains the word "ago" that means the user can claim their credits
-        if (distance.includes("ago")) {
+        if (isPast(timeAvailable)) {
           localStorage.removeItem("timeAvailable");
           setButtonDisabled(false);
           setTimeLeft(null);
-          console.log("Past");
         } else {
           setTimeLeft(distance);
         }
