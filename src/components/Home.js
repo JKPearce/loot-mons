@@ -83,10 +83,11 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
     );
 
     addToInventory((prevState) => {
-      return { ...prevState, credits: inventory.credits + 1000 };
+      return {
+        ...prevState,
+        credits: inventory.credits + FREQUENT_CREDIT_AMOUNT,
+      };
     });
-    //this is just to run the useEffect function to update localstorage
-    setNewItem(["credits", { name: "LootCreds!", id: uniqid() }]);
   }
 
   function randomNumber(number) {
