@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { PRICE } from "../helpers/global";
+import {
+  FREQUENT_CREDIT_AMOUNT,
+  FREQUENT_CREDIT_INTERVAL,
+  PRICE,
+} from "../helpers/global";
 import PokeCard from "./PokeCard";
 import uniqid from "uniqid";
+import { add, intlFormatDistance, parseJSON } from "date-fns";
 
 const Home = ({ pokedex, inventory, addToInventory }) => {
   const [newItem, setNewItem] = useState();
   const [creditError, setCreditError] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(null);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
 
   useEffect(() => {
     if (newItem) {
@@ -14,6 +21,30 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newItem]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (localStorage.getItem("timeAvailable")) {
+        const timeAvailable = parseJSON(localStorage.getItem("timeAvailable"));
+        const distance = intlFormatDistance(timeAvailable, new Date());
+
+        //if the returned string format contains the word "ago" that means the user can claim their credits
+        if (distance.includes("ago")) {
+          localStorage.removeItem("timeAvailable");
+          setButtonDisabled(false);
+          setTimeLeft(null);
+          console.log("Past");
+        } else {
+          setTimeLeft(distance);
+        }
+      } else {
+        //button is set to disabled initially, this is enables the button after it checks if theres a date
+        setButtonDisabled(false);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  });
 
   function openBox(boxType) {
     if (inventory.credits < PRICE[boxType]) {
@@ -41,6 +72,17 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
   }
 
   function addCredits() {
+    setButtonDisabled(true);
+
+    localStorage.setItem(
+      "timeAvailable",
+      JSON.stringify(
+        add(new Date(), {
+          hours: FREQUENT_CREDIT_INTERVAL,
+        })
+      )
+    );
+
     addToInventory((prevState) => {
       return { ...prevState, credits: inventory.credits + 1000 };
     });
@@ -52,37 +94,19 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
     return Math.floor(Math.random() * number);
   }
 
-  function renderNewItem() {
-    if (newItem) {
-      if (newItem[0] === "pokemon") {
-        return <PokeCard pokemon={newItem[1]} newPokemon={true} />;
-      } else {
-        return (
-          <div>
-            <b>{newItem[1].name}</b> has been added to your inventory!
-          </div>
-        );
-      }
-    } else {
-      return null;
-    }
-  }
-
   return (
     <div className="relative flex flex-col place-items-center p-5">
       <h1 className="p-4 text-center text-5xl font-bold ">Loot-Mons</h1>
       <div className="h-60 w-40 ">
-        {renderNewItem()}
-        {/* {newItem ? (
-          newItem[0] ?
+        {newItem ? (
           newItem[0] === "pokemon" ? (
             <PokeCard pokemon={newItem[1]} newPokemon={true} />
           ) : (
             <div>
               <b>{newItem[1].name}</b> has been added to your inventory!
             </div>
-          ) :
-        ) : null} */}
+          )
+        ) : null}
         {creditError && (
           <div className="text-error font-bold text-4xl">
             You do not have enough LootCreds!
@@ -99,8 +123,14 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
         <button className="btn btn-md" onClick={() => openBox("abilities")}>
           Open Ability Box ({PRICE.abilities} LootCreds)
         </button>
-        <button className="btn btn-md" onClick={addCredits}>
-          Get 1000 LootCreds
+        <button
+          disabled={buttonDisabled}
+          className="btn btn-md"
+          onClick={addCredits}
+        >
+          {timeLeft === "now" || timeLeft === null
+            ? `Get ${FREQUENT_CREDIT_AMOUNT} LootCreds`
+            : `More LootCreds ${timeLeft}`}
         </button>
         <button
           className="btn btn-sm btn-warning"
