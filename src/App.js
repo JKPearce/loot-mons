@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
+import ForgotPassword from "./components/ForgotPassword";
 import Home from "./components/Home";
 import Inventory from "./components/Inventory";
 import LogIn from "./components/LogIn";
@@ -95,6 +96,7 @@ function App() {
         </Route>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<LogIn />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
     </AuthProvider>
 

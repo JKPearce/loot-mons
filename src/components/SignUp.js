@@ -28,7 +28,7 @@ export default function SignUp() {
           displayName: displayNameRef.current.value,
         });
         console.log("Successful sign up: ", user.user);
-        // navigate("/profile");
+        navigate("/profile");
       })
       .catch((error) => {
         setLoading(false);
