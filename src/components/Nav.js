@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from "react";
+import { BsMoonFill, BsSunFill } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import { themeChange } from "theme-change";
 import { useAuth } from "../contexts/AuthContext";
@@ -132,8 +133,8 @@ const Nav = () => {
           <button
             onClick={(e) =>
               e.currentTarget.classList.contains("ACTIVECLASS")
-                ? setThemeIcon("☀️")
-                : setThemeIcon("🌙")
+                ? setThemeIcon(<BsSunFill />)
+                : setThemeIcon(<BsMoonFill />)
             }
             data-toggle-theme="winter,night"
             data-act-class="ACTIVECLASS"
