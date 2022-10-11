@@ -32,8 +32,8 @@ export default function LogIn() {
   return (
     <form onSubmit={handleSubmit}>
       <div className="hero min-h-screen bg-base-200">
-        <div className="hero-content flex-col lg:flex-row-reverse">
-          <div className="text-center lg:text-left">
+        <div className="hero-content flex-col">
+          <div className="text-center">
             <h1 className="text-5xl font-bold">Log In</h1>
           </div>
 
@@ -83,6 +83,9 @@ export default function LogIn() {
                   ref={passwordRef}
                 />
               </div>
+              <Link className="link pt-2" to="/forgot-password">
+                Forgot Password?
+              </Link>
               <div className="form-control mt-6">
                 {loading ? (
                   <progress className="progress w-full"></progress>
@@ -91,12 +94,12 @@ export default function LogIn() {
                     Log in
                   </button>
                 )}
-                <Link className="link pt-2" to="/signup">
-                  Create Account
-                </Link>
               </div>
             </div>
           </div>
+          <Link className="link pt-2" to="/signup">
+            Create Account
+          </Link>
         </div>
       </div>
     </form>
