@@ -18,15 +18,17 @@ export default function LogIn() {
     setLoading(true);
     logIn(emailRef.current.value, passwordRef.current.value)
       .then((user) => {
+        console.log("successful sign in");
         navigate("/profile");
       })
       .catch((error) => {
         setLoading(false);
         console.log({ error });
         setError(error.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-
-    setLoading(false);
   }
 
   return (
