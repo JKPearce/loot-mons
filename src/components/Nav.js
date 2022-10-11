@@ -100,15 +100,20 @@ const Nav = () => {
         </div>
         <div className="navbar-end">
           {currentUser ? (
-            <div className="dropdown dropdown-end dropdown-content">
-              <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                <div className="w-10 rounded-full">
-                  <img src="https://placeimg.com/80/80/people" />
-                </div>
-              </label>
+            <div className="dropdown dropdown-end dropdown-content flex flex-row">
+              <div className="flex btn btn-ghost gap-3">
+                <button className=" normal-case">
+                  {currentUser.displayName ? currentUser.displayName : ""}
+                </button>
+                <label tabIndex={0} className=" avatar">
+                  <div className="w-10 rounded-full">
+                    <img src="https://placeimg.com/80/80/people" />
+                  </div>
+                </label>
+              </div>
               <ul
                 tabIndex={0}
-                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-neutral text-neutral-content rounded-box w-52"
+                className="menu menu-compact dropdown-content mt-14 p-2 shadow bg-neutral text-neutral-content rounded-box w-52"
               >
                 <li>
                   <Link to="/profile">Profile</Link>
