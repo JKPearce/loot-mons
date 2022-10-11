@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Home from "./components/Home";
 import Inventory from "./components/Inventory";
 import Nav from "./components/Nav";
+import SignUp from "./components/SignUp";
 import SubmitReplay from "./components/SubmitReplay";
 import TeamBuilder from "./components/TeamBuilder";
+import { AuthProvider } from "./contexts/AuthContext";
 import { NEW_USER_CREDIT_AMOUNT } from "./helpers/global";
 
 function App() {
@@ -82,45 +84,50 @@ function App() {
   }, []);
 
   return (
-    <>
+    <AuthProvider>
       <Nav />
       <Routes>
-        <Route
-          exact
-          path="/"
-          element={
-            <Home
-              pokedex={pokedex}
-              inventory={inventory}
-              addToInventory={addToInventory}
-            />
-          }
-        />
-        <Route
-          path="/inventory"
-          element={<Inventory inventory={inventory} />}
-        />
-        <Route
-          path="/teams"
-          element={
-            <TeamBuilder
-              inventory={inventory}
-              teamList={teamList}
-              setTeamList={setTeamList}
-            />
-          }
-        />
-        <Route
-          path="/submit-replay"
-          element={
-            <SubmitReplay
-              inventory={inventory}
-              addToInventory={addToInventory}
-            />
-          }
-        />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
-    </>
+    </AuthProvider>
+
+    // {/* <Nav />
+    // <Routes>
+    //   <Route
+    //     exact
+    //     path="/"
+    //     element={
+    //       <Home
+    //         pokedex={pokedex}
+    //         inventory={inventory}
+    //         addToInventory={addToInventory}
+    //       />
+    //     }
+    //   />
+    //   <Route
+    //     path="/inventory"
+    //     element={<Inventory inventory={inventory} />}
+    //   />
+    //   <Route
+    //     path="/teams"
+    //     element={
+    //       <TeamBuilder
+    //         inventory={inventory}
+    //         teamList={teamList}
+    //         setTeamList={setTeamList}
+    //       />
+    //     }
+    //   />
+    //   <Route
+    //     path="/submit-replay"
+    //     element={
+    //       <SubmitReplay
+    //         inventory={inventory}
+    //         addToInventory={addToInventory}
+    //       />
+    //     }
+    //   />
+    // </Routes> */}
   );
 }
 

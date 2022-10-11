@@ -5,7 +5,6 @@ import {
   PRICE,
 } from "../helpers/global";
 import PokeCard from "./PokeCard";
-import uniqid from "uniqid";
 import { add, formatDistanceToNowStrict, parseJSON, isPast } from "date-fns";
 
 const Home = ({ pokedex, inventory, addToInventory }) => {
