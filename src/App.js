@@ -3,7 +3,10 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Home from "./components/Home";
 import Inventory from "./components/Inventory";
+import LogIn from "./components/LogIn";
 import Nav from "./components/Nav";
+import PrivateRoute from "./components/PrivateRoute";
+import Profile from "./components/Profile";
 import SignUp from "./components/SignUp";
 import SubmitReplay from "./components/SubmitReplay";
 import TeamBuilder from "./components/TeamBuilder";
@@ -87,7 +90,11 @@ function App() {
     <AuthProvider>
       <Nav />
       <Routes>
+        <Route element={<PrivateRoute />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<LogIn />} />
       </Routes>
     </AuthProvider>
 
