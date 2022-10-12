@@ -11,6 +11,7 @@ import Profile from "./components/Profile";
 import SignUp from "./components/SignUp";
 import SubmitReplay from "./components/SubmitReplay";
 import TeamBuilder from "./components/TeamBuilder";
+import ChangePassword from "./components/ChangePassword";
 import { useAuth } from "./contexts/AuthContext";
 import { NEW_USER_CREDIT_AMOUNT } from "./helpers/global";
 
@@ -95,6 +96,8 @@ function App() {
       <Routes>
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
+          <Route path="/change-password" element={<ChangePassword />} />
+
           <Route
             exact
             path="/"
