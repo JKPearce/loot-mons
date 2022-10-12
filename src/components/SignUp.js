@@ -71,7 +71,9 @@ export default function SignUp() {
               )}
               <div className="form-control">
                 <div className="indicator">
-                  <span className="indicator-item badge">*</span>
+                  <span className="indicator-item badge badge-error badge-sm">
+                    *
+                  </span>
                   <input
                     type="text"
                     placeholder="Username"
@@ -83,7 +85,9 @@ export default function SignUp() {
               </div>
               <div className="form-control">
                 <div className="indicator">
-                  <span className="indicator-item badge">*</span>
+                  <span className="indicator-item badge badge-error badge-sm">
+                    *
+                  </span>
                   <input
                     type="email"
                     placeholder="Email"
@@ -95,7 +99,9 @@ export default function SignUp() {
               </div>
               <div className="form-control">
                 <div className="indicator">
-                  <span className="indicator-item badge">*</span>
+                  <span className="indicator-item badge badge-error badge-sm">
+                    *
+                  </span>
                   <input
                     type="password"
                     placeholder="Password"
@@ -107,7 +113,9 @@ export default function SignUp() {
               </div>
               <div className="form-control">
                 <div className="indicator">
-                  <span className="indicator-item badge">*</span>
+                  <span className="indicator-item badge badge-error badge-sm">
+                    *
+                  </span>
                   <input
                     type="password"
                     placeholder="Confirm Password"

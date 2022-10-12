@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import ForgotPassword from "./components/ForgotPassword";
 import Home from "./components/Home";
@@ -11,10 +11,12 @@ import Profile from "./components/Profile";
 import SignUp from "./components/SignUp";
 import SubmitReplay from "./components/SubmitReplay";
 import TeamBuilder from "./components/TeamBuilder";
-import { AuthProvider } from "./contexts/AuthContext";
+import { useAuth } from "./contexts/AuthContext";
 import { NEW_USER_CREDIT_AMOUNT } from "./helpers/global";
 
 function App() {
+  const { currentUser } = useAuth();
+
   const [teamList, setTeamList] = useState([]);
 
   const [pokedex, setPokedex] = useState({
@@ -88,31 +90,54 @@ function App() {
   }, []);
 
   return (
-    <AuthProvider>
+    <>
       <Nav />
       <Routes>
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
+          <Route
+            exact
+            path="/"
+            element={
+              <Home
+                pokedex={pokedex}
+                inventory={inventory}
+                addToInventory={addToInventory}
+              />
+            }
+          />
         </Route>
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/login" element={<LogIn />} />
+        <Route
+          path="/signup"
+          element={
+            !currentUser ? <SignUp /> : <Navigate to="/" replace={true} />
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            !currentUser ? <LogIn /> : <Navigate to="/" replace={true} />
+          }
+        />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+
+        <Route path="*" element={<p>Page does not exist</p>} />
       </Routes>
-    </AuthProvider>
+    </>
 
     // {/* <Nav />
     // <Routes>
-    //   <Route
-    //     exact
-    //     path="/"
-    //     element={
-    //       <Home
-    //         pokedex={pokedex}
-    //         inventory={inventory}
-    //         addToInventory={addToInventory}
-    //       />
-    //     }
-    //   />
+    // <Route
+    //   exact
+    //   path="/"
+    //   element={
+    //     <Home
+    //       pokedex={pokedex}
+    //       inventory={inventory}
+    //       addToInventory={addToInventory}
+    //     />
+    //   }
+    // />
     //   <Route
     //     path="/inventory"
     //     element={<Inventory inventory={inventory} />}

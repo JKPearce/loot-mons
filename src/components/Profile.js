@@ -10,6 +10,7 @@ export default function Profile() {
   const { currentUser, updateEmail } = useAuth();
   const emailRef = useRef(currentUser.email);
   const usernameRef = useRef(currentUser.displayName);
+  const passwordRef = useRef();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState();
@@ -66,7 +67,7 @@ export default function Profile() {
   return (
     <div className="relative flex flex-col place-items-center p-5">
       <h1 className="p-4 text-center text-5xl font-bold ">Profile</h1>
-      <div className="profile-details max-w-fit">
+      <form className="">
         <div className="grid grid-cols-2 border border-primary my-5">
           <div>Email</div>
           <input
@@ -106,9 +107,27 @@ export default function Profile() {
         {loading ? (
           <progress className="progress w-full"></progress>
         ) : editing ? (
-          <button className="btn btn-primary" onClick={handleSave}>
-            Save
-          </button>
+          <>
+            <div className="indicator">
+              <span className="indicator-item badge badge-error badge-sm">
+                *
+              </span>
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                required
+                className="input input-bordered"
+                ref={passwordRef}
+              />
+            </div>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              onClick={handleSave}
+            >
+              Save
+            </button>
+          </>
         ) : (
           <button
             className="btn btn-primary"
@@ -117,8 +136,7 @@ export default function Profile() {
             Edit profile
           </button>
         )}
-        {}
-      </div>
+      </form>
     </div>
   );
 }
