@@ -28,11 +28,11 @@ const Nav = () => {
   }, []);
 
   useEffect(() => {
-    //remove the logout notification / error after 5 sec
+    //remove the logout notification / error after 3 sec
     if (notification) {
       const timer = setTimeout(() => {
         setNotification("");
-      }, 5000);
+      }, 3000);
       return () => clearTimeout(timer); //cleanup timer
     }
   }, [notification]);
@@ -118,9 +118,13 @@ const Nav = () => {
                 <li>
                   <Link to="/profile">Profile</Link>
                 </li>
-                <li></li>
                 <li>
-                  <button onClick={handleLogout}>Logout</button>
+                  <Link to="/change-password">Change Password</Link>
+                </li>
+                <li>
+                  <button className="btn btn-error" onClick={handleLogout}>
+                    Logout
+                  </button>
                 </li>
               </ul>
             </div>
