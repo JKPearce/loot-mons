@@ -178,7 +178,7 @@ const SubmitReplay = ({ inventory, addToInventory }) => {
         <p>Game was forfeited and no points were awarded</p>
       )}
       {showBreakdown && (
-        <div className="bg-info-content p-5 flex flex-col gap-5 rounded-box shadow-md w-full content-center justify-center text-center">
+        <div className="card card-bordered bg-base-100 shadow-lg p-5 flex flex-col gap-5 content-center justify-center text-center">
           <div className="">
             <p className="text-xl font-bold">How LootCreds are rewarded</p>
             <p>Credits per Pokemon Elimination: {CREDITS_PER_SCORE}</p>

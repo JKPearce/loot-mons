@@ -65,78 +65,90 @@ export default function Profile() {
   }, [message]);
 
   return (
-    <div className="relative flex flex-col place-items-center p-5">
+    <>
       <h1 className="p-4 text-center text-5xl font-bold ">Profile</h1>
-      <form className="">
-        <div className="grid grid-cols-2 border border-primary my-5">
-          <div>Email</div>
-          <input
-            className={`input ${
-              editing ? "input-bordered" : "input-disabled"
-            } ${error ? "input-error" : ""}`}
-            type="email"
-            ref={emailRef}
-            defaultValue={currentUser.email}
-            disabled={!editing}
-          ></input>
-          <div>Username</div>
-          <input
-            className={`input ${
-              editing ? "input-bordered" : "input-disabled"
-            } ${error ? "input-error" : ""}`}
-            type="text"
-            defaultValue={currentUser.displayName}
-            ref={usernameRef}
-            disabled={!editing}
-          ></input>
-        </div>
-        {error && (
-          <div className="alert alert-error shadow-lg my-5">
-            <div>
-              <span>{error}</span>
+      <div className="grid grid-cols-1 sm:grid-cols-2 w-full p-5 gap-2 ">
+        <form className="flex flex-col w-full p-5 card card-bordered bg-base-100 shadow-xl">
+          <table className="border-separate table-auto">
+            <tbody>
+              <tr>
+                <td>Email</td>
+                <td>
+                  <input
+                    className={`input w-full ${
+                      editing ? "input-bordered" : "input-disabled"
+                    } ${error ? "input-error" : ""}`}
+                    type="email"
+                    ref={emailRef}
+                    defaultValue={currentUser.email}
+                    disabled={!editing}
+                  ></input>
+                </td>
+              </tr>
+              <tr>
+                <td>Username</td>
+                <td>
+                  <input
+                    className={`input w-full ${
+                      editing ? "input-bordered" : "input-disabled"
+                    } ${error ? "input-error" : ""}`}
+                    type="text"
+                    defaultValue={currentUser.displayName}
+                    ref={usernameRef}
+                    disabled={!editing}
+                  ></input>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          {error && (
+            <div className="alert alert-error shadow-lg my-5">
+              <div>
+                <span>{error}</span>
+              </div>
             </div>
-          </div>
-        )}
-        {message && (
-          <div className="alert alert-success shadow-lg my-5">
-            <div>
-              <span>{message}</span>
+          )}
+          {message && (
+            <div className="alert alert-success shadow-lg my-5">
+              <div>
+                <span>{message}</span>
+              </div>
             </div>
-          </div>
-        )}
-        {loading ? (
-          <progress className="progress w-full"></progress>
-        ) : editing ? (
-          <>
-            <div className="indicator">
-              <span className="indicator-item badge badge-error badge-sm">
-                *
-              </span>
-              <input
-                type="password"
-                placeholder="Confirm Password"
-                required
-                className="input input-bordered"
-                ref={passwordRef}
-              />
+          )}
+          {loading ? (
+            <progress className="progress w-full"></progress>
+          ) : editing ? (
+            <div className="flex justify-between ">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                onClick={handleSave}
+              >
+                Save
+              </button>
+              <div className="indicator">
+                <span className="indicator-item badge badge-error badge-sm">
+                  *
+                </span>
+                <input
+                  type="password"
+                  placeholder="Confirm Password"
+                  required
+                  className="input input-bordered"
+                  ref={passwordRef}
+                />
+              </div>
             </div>
+          ) : (
             <button
-              type="submit"
               className="btn btn-primary"
-              onClick={handleSave}
+              onClick={() => setEditing(!editing)}
             >
-              Save
+              Edit profile
             </button>
-          </>
-        ) : (
-          <button
-            className="btn btn-primary"
-            onClick={() => setEditing(!editing)}
-          >
-            Edit profile
-          </button>
-        )}
-      </form>
-    </div>
+          )}
+        </form>
+      </div>
+    </>
   );
 }

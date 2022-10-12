@@ -4,18 +4,18 @@ import PokeCard from "./PokeCard";
 const Inventory = ({ inventory }) => {
   return (
     <>
-      <div className="flex gap-10 m-5 flex-wrap">
-        <div className="h-96  bg-primary-content overflow-y-scroll">
+      <div className="grid grid-cols-2 p-5 gap-5">
+        <div className="card card-bordered bg-base-100 shadow-lg overflow-y-scroll col-span-full">
           <h3 className="z-10 sticky top-0 p-2 bg-primary-content text-center text-lg font-bold">
             Pokemon
           </h3>
-          <div className="p-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="p-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 max-h-96">
             {inventory.pokemon.map((poke, i) => (
               <PokeCard key={i} pokemon={poke} />
             ))}
           </div>
         </div>
-        <div className="h-80 w-48 flex flex-col bg-primary-content overflow-y-scroll ">
+        <div className="h-80 w-48 card card-bordered bg-base-100 shadow-lg overflow-y-scroll h ">
           <h3 className="sticky top-0 p-2 bg-primary-content text-center text-lg font-bold">
             Moves
           </h3>
@@ -30,7 +30,7 @@ const Inventory = ({ inventory }) => {
             ))}
           </div>
         </div>
-        <div className="h-80 w-48 flex flex-col bg-primary-content overflow-y-scroll ">
+        <div className="h-80 w-48 card card-bordered bg-base-100 shadow-lg overflow-y-scroll ">
           <h3 className="sticky top-0 p-2 bg-primary-content text-center text-lg font-bold">
             Abilities
           </h3>
