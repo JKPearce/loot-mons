@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { auth } from "../firebase.js";
+import firebase from "firebase/compat/app";
 
 const AuthContext = React.createContext();
 
@@ -34,6 +35,14 @@ export function AuthProvider({ children }) {
   function updatePassword(password) {
     return currentUser.updatePassword(password);
   }
+
+  function reauthenticate(password) {
+    const cred = firebase.auth.EmailAuthProvider.credential(
+      currentUser.email,
+      password
+    );
+    return currentUser.reauthenticateWithCredential(cred);
+  }
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
@@ -51,6 +60,7 @@ export function AuthProvider({ children }) {
     resetPassword,
     updateEmail,
     updatePassword,
+    reauthenticate,
   };
 
   return (

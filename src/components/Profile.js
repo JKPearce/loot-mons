@@ -7,39 +7,44 @@ import { useAuth } from "../contexts/AuthContext";
 //total pokemon in inv, total wins, highest amount of credits owned, total credits acquired, total credits spent
 export default function Profile() {
   const [editing, setEditing] = useState(false);
-  const { currentUser, updateEmail } = useAuth();
+  const { currentUser, updateEmail, reauthenticate } = useAuth();
   const emailRef = useRef(currentUser.email);
   const usernameRef = useRef(currentUser.displayName);
   const passwordRef = useRef();
-  const [error, setError] = useState("");
+  const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState();
 
-  function handleSave() {
-    console.log("current ref value = ", usernameRef.current);
+  function handleSave(e) {
+    e.preventDefault();
     const promises = [];
-    setLoading(true);
-    setError("");
 
-    //check if they changed any inputs and update if true
-    if (usernameRef.current.value !== currentUser.displayName) {
-      promises.push(
-        currentUser.updateProfile({
-          displayName: usernameRef.current.value,
-          email: emailRef.current.value,
-        })
-      );
+    if (!passwordRef.current.value) {
+      return setError("Please enter your password");
     }
 
     if (emailRef.current.value !== currentUser.email) {
       //TODO ADD REAUTHENTICATION
       //https://stackoverflow.com/questions/37811684/how-to-create-credential-object-needed-by-firebase-web-user-reauthenticatewith
       //https://firebase.google.com/docs/reference/js/v8/firebase.User#reauthenticatewithcredential
+      promises.push(reauthenticate(passwordRef.current.value));
       promises.push(updateEmail(emailRef.current.value));
     }
 
+    //check if they changed any inputs and update if true
+    if (usernameRef.current.value !== currentUser.displayName) {
+      promises.push(
+        currentUser.updateProfile({
+          displayName: usernameRef.current.value,
+        })
+      );
+    }
+
+    setLoading(true);
+    setError("");
     Promise.all(promises)
       .then(() => {
+        setMessage("Successfully updated profile");
         console.log("Saved");
       })
       .catch((error) => {
@@ -48,8 +53,6 @@ export default function Profile() {
       })
       .finally(() => {
         setLoading(false);
-        setMessage("Successfully updated profile");
-        setError("");
         setEditing(!editing);
       });
   }
@@ -59,16 +62,20 @@ export default function Profile() {
     if (message) {
       const timer = setTimeout(() => {
         setMessage("");
+        setError("");
       }, 5000);
       return () => clearTimeout(timer); //cleanup timer
     }
-  }, [message]);
+  }, [message, error]);
 
   return (
     <>
       <h1 className="p-4 text-center text-5xl font-bold ">Profile</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 w-full p-5 gap-2 ">
-        <form className="flex flex-col w-full p-5 card card-bordered bg-base-100 shadow-xl">
+        <form
+          onSubmit={handleSave}
+          className="flex flex-col w-full p-5 card card-bordered bg-base-100 shadow-xl"
+        >
           <table className="border-separate table-auto">
             <tbody>
               <tr>
@@ -119,11 +126,7 @@ export default function Profile() {
             <progress className="progress w-full"></progress>
           ) : editing ? (
             <div className="flex justify-between ">
-              <button
-                type="submit"
-                className="btn btn-primary"
-                onClick={handleSave}
-              >
+              <button type="submit" className="btn btn-primary">
                 Save
               </button>
               <div className="indicator">
@@ -134,7 +137,9 @@ export default function Profile() {
                   type="password"
                   placeholder="Confirm Password"
                   required
-                  className="input input-bordered"
+                  className={`input input-bordered ${
+                    error ? "input-error" : ""
+                  }`}
                   ref={passwordRef}
                 />
               </div>
