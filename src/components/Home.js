@@ -10,8 +10,8 @@ import { usePokedex } from "../contexts/PokedexContext";
 import { useInventory } from "../contexts/InventoryContext";
 
 const Home = () => {
-  const { pokemon, moves, abilities } = usePokedex();
-  const { inventory, credits } = useInventory();
+  const { pokedex } = usePokedex();
+  const { pokemon, moves, abilities, credits, addPokemon } = useInventory();
   const [newItem, setNewItem] = useState();
   const [creditError, setCreditError] = useState(false);
   const [timeLeft, setTimeLeft] = useState(null);
@@ -41,8 +41,8 @@ const Home = () => {
     return () => clearTimeout(timer);
   });
 
-  function openBox(boxType) {
-    if (inventory.credits < PRICE[boxType]) {
+  function openSingleBox(boxType) {
+    if (credits < PRICE[boxType]) {
       setNewItem(null);
       setCreditError(true);
       return;
@@ -50,10 +50,18 @@ const Home = () => {
       setCreditError(false);
     }
 
-    const num = randomNumber(boxType.length);
-    const newItem = boxType[num];
+    const num = randomNumber(pokedex[boxType].length);
+    const newItem = pokedex[boxType][1];
+    console.log(newItem);
     setNewItem([boxType, newItem]);
 
+    addPokemon(newItem)
+      .then(() => {
+        console.log("added pokemon");
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
     // addToInventory((prevState) => {
     //   const newArr = [...prevState[boxType]];
     //   newArr.push(newItem);
@@ -104,19 +112,24 @@ const Home = () => {
           )
         ) : null}
         {creditError && (
-          <div className="text-error font-bold text-4xl">
-            You do not have enough LootCreds!
+          <div className="alert alert-error shadow-lg">
+            <div>
+              <span>Not enough LootCreds!</span>
+            </div>
           </div>
         )}
       </div>
       <div className="flex gap-4 flex-col">
-        <button className="btn btn-md" onClick={() => openBox(pokemon)}>
+        <button className="btn btn-md" onClick={() => openSingleBox("pokemon")}>
           Open Pokemon Box ({PRICE.pokemon} LootCreds)
         </button>
-        <button className="btn btn-md" onClick={() => openBox(moves)}>
+        <button className="btn btn-md" onClick={() => openSingleBox("moves")}>
           Open Move Box ({PRICE.moves} LootCreds)
         </button>
-        <button className="btn btn-md" onClick={() => openBox(abilities)}>
+        <button
+          className="btn btn-md"
+          onClick={() => openSingleBox("abilities")}
+        >
           Open Ability Box ({PRICE.abilities} LootCreds)
         </button>
         <button

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import ForgotPassword from "./components/ForgotPassword";
@@ -18,14 +18,6 @@ import { PokedexProvider } from "./contexts/PokedexContext";
 
 function App() {
   const { currentUser } = useAuth();
-
-  const [teamList, setTeamList] = useState([]);
-
-  useEffect(() => {
-    if (localStorage.getItem("teams")) {
-      setTeamList(JSON.parse(localStorage.getItem("teams")));
-    }
-  }, []);
 
   return (
     <>

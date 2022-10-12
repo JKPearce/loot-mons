@@ -7,9 +7,11 @@ export function usePokedex() {
 }
 
 export function PokedexProvider({ children }) {
-  const [pokemon, setPokemon] = useState();
-  const [moves, setMoves] = useState();
-  const [abilities, setAbilities] = useState();
+  const [pokedex, setPokedex] = useState({
+    pokemon: [],
+    moves: [],
+    abilities: [],
+  });
 
   function initPokemonData() {
     //data is sourced from https://play.pokemonshowdown.com/data/pokedex.json
@@ -37,30 +39,28 @@ export function PokedexProvider({ children }) {
     return moves;
   }
 
-  function initAbilityData() {
+  async function initAbilityData() {
     //?limit=100000&offset=0 is needed because default limit is like 50
-    return fetch("https://pokeapi.co/api/v2/ability/?limit=100000&offset=0")
+    const abilities = await fetch(
+      "https://pokeapi.co/api/v2/ability/?limit=100000&offset=0"
+    )
       .then((response) => response.json())
       .then((data) => data.results);
-    //  abilities;
+    return abilities;
   }
 
   useEffect(() => {
-    setPokemon(initPokemonData());
-    setMoves(initMoveData());
-
-    fetch("https://pokeapi.co/api/v2/ability/?limit=100000&offset=0")
-      .then((response) => response.json())
-      .then((data) => setAbilities(data.results))
-      .catch((error) => {
-        console.log(error);
+    (async () => {
+      setPokedex({
+        pokemon: initPokemonData(),
+        moves: initMoveData(),
+        abilities: await initAbilityData(),
       });
+    })();
   }, []);
 
   const value = {
-    pokemon,
-    moves,
-    abilities,
+    pokedex,
   };
 
   return (
