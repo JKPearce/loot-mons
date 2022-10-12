@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 //this page will display user profile details so they can edit their showdown name / change password
@@ -24,9 +23,6 @@ export default function Profile() {
     }
 
     if (emailRef.current.value !== currentUser.email) {
-      //TODO ADD REAUTHENTICATION
-      //https://stackoverflow.com/questions/37811684/how-to-create-credential-object-needed-by-firebase-web-user-reauthenticatewith
-      //https://firebase.google.com/docs/reference/js/v8/firebase.User#reauthenticatewithcredential
       promises.push(reauthenticate(passwordRef.current.value));
       promises.push(updateEmail(emailRef.current.value));
     }

@@ -6,19 +6,16 @@ import {
 } from "../helpers/global";
 import PokeCard from "./PokeCard";
 import { add, formatDistanceToNowStrict, parseJSON, isPast } from "date-fns";
+import { usePokedex } from "../contexts/PokedexContext";
+import { useInventory } from "../contexts/InventoryContext";
 
-const Home = ({ pokedex, inventory, addToInventory }) => {
+const Home = () => {
+  const { pokemon, moves, abilities } = usePokedex();
+  const { inventory, credits } = useInventory();
   const [newItem, setNewItem] = useState();
   const [creditError, setCreditError] = useState(false);
   const [timeLeft, setTimeLeft] = useState(null);
   const [buttonDisabled, setButtonDisabled] = useState(true);
-
-  useEffect(() => {
-    if (newItem) {
-      localStorage.setItem("inventory", JSON.stringify(inventory));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newItem]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -53,20 +50,20 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
       setCreditError(false);
     }
 
-    const num = randomNumber(pokedex[boxType].length);
-    const newItem = pokedex[boxType][num];
+    const num = randomNumber(boxType.length);
+    const newItem = boxType[num];
     setNewItem([boxType, newItem]);
 
-    addToInventory((prevState) => {
-      const newArr = [...prevState[boxType]];
-      newArr.push(newItem);
+    // addToInventory((prevState) => {
+    //   const newArr = [...prevState[boxType]];
+    //   newArr.push(newItem);
 
-      return {
-        ...prevState,
-        [boxType]: newArr,
-        credits: inventory.credits - PRICE[boxType],
-      };
-    });
+    //   return {
+    //     ...prevState,
+    //     [boxType]: newArr,
+    //     credits: inventory.credits - PRICE[boxType],
+    //   };
+    // });
   }
 
   function addCredits() {
@@ -81,12 +78,12 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
       )
     );
 
-    addToInventory((prevState) => {
-      return {
-        ...prevState,
-        credits: inventory.credits + FREQUENT_CREDIT_AMOUNT,
-      };
-    });
+    // addToInventory((prevState) => {
+    //   return {
+    //     ...prevState,
+    //     credits: inventory.credits + FREQUENT_CREDIT_AMOUNT,
+    //   };
+    // });
   }
 
   function randomNumber(number) {
@@ -113,13 +110,13 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
         )}
       </div>
       <div className="flex gap-4 flex-col">
-        <button className="btn btn-md" onClick={() => openBox("pokemon")}>
+        <button className="btn btn-md" onClick={() => openBox(pokemon)}>
           Open Pokemon Box ({PRICE.pokemon} LootCreds)
         </button>
-        <button className="btn btn-md" onClick={() => openBox("moves")}>
+        <button className="btn btn-md" onClick={() => openBox(moves)}>
           Open Move Box ({PRICE.moves} LootCreds)
         </button>
-        <button className="btn btn-md" onClick={() => openBox("abilities")}>
+        <button className="btn btn-md" onClick={() => openBox(abilities)}>
           Open Ability Box ({PRICE.abilities} LootCreds)
         </button>
         <button
@@ -141,9 +138,7 @@ const Home = ({ pokedex, inventory, addToInventory }) => {
           Delete Profile
         </button>
       </div>
-      <div className="absolute top-2 right-10">
-        LootCreds: {inventory.credits}
-      </div>
+      <div className="absolute top-2 right-10">LootCreds: {credits}</div>
     </div>
   );
 };

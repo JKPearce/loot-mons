@@ -43,6 +43,7 @@ export function AuthProvider({ children }) {
     );
     return currentUser.reauthenticateWithCredential(cred);
   }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
