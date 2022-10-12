@@ -120,6 +120,19 @@ function App() {
           }
         />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route
+          path="/inventory"
+          element={<Inventory inventory={inventory} />}
+        />
+        <Route
+          path="/submit-replay"
+          element={
+            <SubmitReplay
+              inventory={inventory}
+              addToInventory={addToInventory}
+            />
+          }
+        />
 
         <Route path="*" element={<p>Page does not exist</p>} />
       </Routes>
@@ -138,10 +151,10 @@ function App() {
     //     />
     //   }
     // />
-    //   <Route
-    //     path="/inventory"
-    //     element={<Inventory inventory={inventory} />}
-    //   />
+    // <Route
+    //   path="/inventory"
+    //   element={<Inventory inventory={inventory} />}
+    // />
     //   <Route
     //     path="/teams"
     //     element={
@@ -152,15 +165,15 @@ function App() {
     //       />
     //     }
     //   />
-    //   <Route
-    //     path="/submit-replay"
-    //     element={
-    //       <SubmitReplay
-    //         inventory={inventory}
-    //         addToInventory={addToInventory}
-    //       />
-    //     }
-    //   />
+    // <Route
+    //   path="/submit-replay"
+    //   element={
+    //     <SubmitReplay
+    //       inventory={inventory}
+    //       addToInventory={addToInventory}
+    //     />
+    //   }
+    // />
     // </Routes> */}
   );
 }
