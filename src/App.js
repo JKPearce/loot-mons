@@ -45,7 +45,7 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/submit-replay" element={<SubmitReplay />} />
-
+            <Route path="/team-builder" element={<TeamBuilder />} />
             <Route path="*" element={<p>Page does not exist</p>} />
           </Routes>
         </InventoryProvider>
