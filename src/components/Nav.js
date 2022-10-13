@@ -107,7 +107,10 @@ const Nav = () => {
                 </button>
                 <label tabIndex={0} className=" avatar">
                   <div className="w-10 rounded-full">
-                    <img src="https://placeimg.com/80/80/people" />
+                    <img
+                      src="https://placeimg.com/80/80/people"
+                      alt="profile pic"
+                    />
                   </div>
                 </label>
               </div>

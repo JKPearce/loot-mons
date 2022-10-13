@@ -2,8 +2,8 @@
 import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { auth, db } from "../firebase";
-import { setDoc, doc, serverTimestamp, collection } from "firebase/firestore";
+import { db } from "../firebase";
+import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 import { NEW_USER_CREDIT_AMOUNT } from "../helpers/global";
 
 export default function SignUp() {

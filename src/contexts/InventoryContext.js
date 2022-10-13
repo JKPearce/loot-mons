@@ -3,7 +3,6 @@ import { db } from "../firebase.js";
 import { useAuth } from "../contexts/AuthContext";
 import {
   collection,
-  getDocs,
   setDoc,
   doc,
   increment,

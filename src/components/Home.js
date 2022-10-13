@@ -1,20 +1,13 @@
-import React, { useState, useEffect } from "react";
-import {
-  FREQUENT_CREDIT_AMOUNT,
-  FREQUENT_CREDIT_INTERVAL,
-  PRICE,
-} from "../helpers/global";
+import React, { useState } from "react";
+import { PRICE } from "../helpers/global";
 import PokeCard from "./PokeCard";
-import { add, formatDistanceToNowStrict, parseJSON, isPast } from "date-fns";
+// import { add, formatDistanceToNowStrict, parseJSON, isPast } from "date-fns";
 import { usePokedex } from "../contexts/PokedexContext";
 import { useInventory } from "../contexts/InventoryContext";
 
 const Home = () => {
   const { pokedex } = usePokedex();
   const {
-    pokemon,
-    moves,
-    abilities,
     credits,
     addPokemon,
     newItem,
@@ -24,32 +17,32 @@ const Home = () => {
     removeCredits,
   } = useInventory();
   const [creditError, setCreditError] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(null);
-  const [buttonDisabled, setButtonDisabled] = useState(true);
+  // const [timeLeft, setTimeLeft] = useState(null);
+  // const [buttonDisabled, setButtonDisabled] = useState(true);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (localStorage.getItem("timeAvailable")) {
-        const timeAvailable = parseJSON(localStorage.getItem("timeAvailable"));
-        const distance = formatDistanceToNowStrict(timeAvailable, {
-          unit: "minute",
-        });
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     if (localStorage.getItem("timeAvailable")) {
+  //       const timeAvailable = parseJSON(localStorage.getItem("timeAvailable"));
+  //       const distance = formatDistanceToNowStrict(timeAvailable, {
+  //         unit: "minute",
+  //       });
 
-        if (isPast(timeAvailable)) {
-          localStorage.removeItem("timeAvailable");
-          setButtonDisabled(false);
-          setTimeLeft(null);
-        } else {
-          setTimeLeft(distance);
-        }
-      } else {
-        //button is set to disabled initially, this is enables the button after it checks if theres a date
-        setButtonDisabled(false);
-      }
-    }, 1000);
+  //       if (isPast(timeAvailable)) {
+  //         localStorage.removeItem("timeAvailable");
+  //         setButtonDisabled(false);
+  //         setTimeLeft(null);
+  //       } else {
+  //         setTimeLeft(distance);
+  //       }
+  //     } else {
+  //       //button is set to disabled initially, this is enables the button after it checks if theres a date
+  //       setButtonDisabled(false);
+  //     }
+  //   }, 1000);
 
-    return () => clearTimeout(timer);
-  });
+  //   return () => clearTimeout(timer);
+  // });
 
   function openSingleBox(boxType) {
     if (credits < PRICE[boxType]) {
@@ -75,19 +68,6 @@ const Home = () => {
     if (boxType === "abilities") {
       addAbility(newItem);
     }
-  }
-
-  function addCredits() {
-    setButtonDisabled(true);
-
-    localStorage.setItem(
-      "timeAvailable",
-      JSON.stringify(
-        add(new Date(), {
-          hours: FREQUENT_CREDIT_INTERVAL,
-        })
-      )
-    );
   }
 
   function randomNumber(number) {
@@ -128,7 +108,7 @@ const Home = () => {
         >
           Open Ability Box ({PRICE.abilities} LootCreds)
         </button>
-        <button
+        {/* <button
           disabled={buttonDisabled}
           className="btn btn-md"
           onClick={addCredits}
@@ -136,7 +116,7 @@ const Home = () => {
           {timeLeft === "now" || timeLeft === null
             ? `Get ${FREQUENT_CREDIT_AMOUNT} LootCreds`
             : `More LootCreds ${timeLeft}`}
-        </button>
+        </button> */}
       </div>
       <div className="absolute top-2 right-10">LootCreds: {credits}</div>
     </div>
