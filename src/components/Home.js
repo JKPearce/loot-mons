@@ -11,8 +11,17 @@ import { useInventory } from "../contexts/InventoryContext";
 
 const Home = () => {
   const { pokedex } = usePokedex();
-  const { pokemon, moves, abilities, credits, addPokemon } = useInventory();
-  const [newItem, setNewItem] = useState();
+  const {
+    pokemon,
+    moves,
+    abilities,
+    credits,
+    addPokemon,
+    newItem,
+    resetNewItem,
+    addMove,
+    addAbility,
+  } = useInventory();
   const [creditError, setCreditError] = useState(false);
   const [timeLeft, setTimeLeft] = useState(null);
   const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -43,7 +52,7 @@ const Home = () => {
 
   function openSingleBox(boxType) {
     if (credits < PRICE[boxType]) {
-      setNewItem(null);
+      resetNewItem();
       setCreditError(true);
       return;
     } else {
@@ -51,27 +60,24 @@ const Home = () => {
     }
 
     const num = randomNumber(pokedex[boxType].length);
-    const newItem = pokedex[boxType][1];
+    const newItem = pokedex[boxType][num];
     console.log(newItem);
-    setNewItem([boxType, newItem]);
 
-    addPokemon(newItem)
-      .then(() => {
-        console.log("added pokemon");
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-    // addToInventory((prevState) => {
-    //   const newArr = [...prevState[boxType]];
-    //   newArr.push(newItem);
-
-    //   return {
-    //     ...prevState,
-    //     [boxType]: newArr,
-    //     credits: inventory.credits - PRICE[boxType],
-    //   };
-    // });
+    if (boxType === "pokemon") {
+      addPokemon(newItem)
+        .then(() => {
+          console.log(`added new ${boxType}: `, newItem);
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    }
+    if (boxType === "moves") {
+      addMove(newItem);
+    }
+    if (boxType === "abilities") {
+      addAbility(newItem);
+    }
   }
 
   function addCredits() {
@@ -85,13 +91,6 @@ const Home = () => {
         })
       )
     );
-
-    // addToInventory((prevState) => {
-    //   return {
-    //     ...prevState,
-    //     credits: inventory.credits + FREQUENT_CREDIT_AMOUNT,
-    //   };
-    // });
   }
 
   function randomNumber(number) {
