@@ -32,7 +32,7 @@ const Nav = () => {
     if (notification) {
       const timer = setTimeout(() => {
         setNotification("");
-      }, 3000);
+      }, 2000);
       return () => clearTimeout(timer); //cleanup timer
     }
   }, [notification]);

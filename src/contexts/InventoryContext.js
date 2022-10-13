@@ -30,15 +30,16 @@ export function InventoryProvider({ children }) {
     setNewItem(["pokemon", newPokemon]);
 
     if (checkForDupe(newPokemon, pokemon)) {
+      console.log("update doc");
       return updateDoc(
-        doc(db, `users/${currentUser.uid}/pokemon/${newPokemon.name}`),
+        doc(db, `inventory/${currentUser.uid}/pokemon/${newPokemon.name}`),
         {
           count: increment(1),
         }
       );
     } else {
       return setDoc(
-        doc(db, `users/${currentUser.uid}/pokemon`, newPokemon.name),
+        doc(db, `inventory/${currentUser.uid}/pokemon`, newPokemon.name),
         {
           ...newPokemon,
           count: 1,
@@ -52,16 +53,19 @@ export function InventoryProvider({ children }) {
 
     if (checkForDupe(newMove, moves)) {
       return updateDoc(
-        doc(db, `users/${currentUser.uid}/moves/${newMove.name}`),
+        doc(db, `inventory/${currentUser.uid}/moves/${newMove.name}`),
         {
           count: increment(1),
         }
       );
     } else {
-      return setDoc(doc(db, `users/${currentUser.uid}/moves`, newMove.name), {
-        ...newMove,
-        count: 1,
-      });
+      return setDoc(
+        doc(db, `inventory/${currentUser.uid}/moves`, newMove.name),
+        {
+          ...newMove,
+          count: 1,
+        }
+      );
     }
   }
 
@@ -70,14 +74,14 @@ export function InventoryProvider({ children }) {
 
     if (checkForDupe(newAbility, abilities)) {
       return updateDoc(
-        doc(db, `users/${currentUser.uid}/abilities/${newAbility.name}`),
+        doc(db, `inventory/${currentUser.uid}/abilities/${newAbility.name}`),
         {
           count: increment(1),
         }
       );
     } else {
       return setDoc(
-        doc(db, `users/${currentUser.uid}/abilities`, newAbility.name),
+        doc(db, `inventory/${currentUser.uid}/abilities`, newAbility.name),
         {
           ...newAbility,
           count: 1,
@@ -88,13 +92,9 @@ export function InventoryProvider({ children }) {
 
   function checkForDupe(newObject, currentObject) {
     //check if the player already has that item in their inventory
-    const result = currentObject.some((current) => {
-      if (current.name === newObject.name) {
-        return true;
-      } else {
-        return false;
-      }
-    });
+    const result = currentObject.some(
+      (current) => current.name === newObject.name
+    );
     console.log("duplicate = ", result);
     return result;
   }
@@ -103,12 +103,22 @@ export function InventoryProvider({ children }) {
     setNewItem(null);
   }
 
+  function removeCredits(amount) {
+    updateDoc(doc(db, `users/${currentUser.uid}/`), {
+      credits: increment(-amount),
+      boxes_opened: increment(1),
+    });
+  }
+
   useEffect(() => {
     if (currentUser) {
-      const pokemonRef = collection(db, `users/${currentUser.uid}/pokemon`);
-      const movesRef = collection(db, `users/${currentUser.uid}/moves`);
-      const abilitiesRef = collection(db, `users/${currentUser.uid}/abilities`);
-      const creditRef = doc(db, `users/${currentUser.uid}`);
+      const pokemonRef = collection(db, `inventory/${currentUser.uid}/pokemon`);
+      const movesRef = collection(db, `inventory/${currentUser.uid}/moves`);
+      const abilitiesRef = collection(
+        db,
+        `inventory/${currentUser.uid}/abilities`
+      );
+      const userRef = doc(db, `users/${currentUser.uid}`);
 
       onSnapshot(pokemonRef, (snapshot) => {
         const pokemonArray = [];
@@ -135,7 +145,7 @@ export function InventoryProvider({ children }) {
         setAbilities(abilitiesArray);
       });
 
-      onSnapshot(creditRef, (snapshot) => {
+      onSnapshot(userRef, (snapshot) => {
         setCredits(snapshot.data().credits);
         console.log("credit snapshot", snapshot.data().credits);
       });
@@ -143,12 +153,6 @@ export function InventoryProvider({ children }) {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    console.log("new pokemon list =", pokemon);
-    console.log("new moves list =", moves);
-    console.log("new abilities list =", abilities);
-  }, [abilities, moves, pokemon]);
 
   const value = {
     pokemon,
@@ -159,6 +163,7 @@ export function InventoryProvider({ children }) {
     addPokemon,
     addMove,
     addAbility,
+    removeCredits,
     resetNewItem,
   };
   return (

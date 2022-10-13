@@ -2,6 +2,9 @@
 import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { auth, db } from "../firebase";
+import { setDoc, doc, serverTimestamp, collection } from "firebase/firestore";
+import { NEW_USER_CREDIT_AMOUNT } from "../helpers/global";
 
 export default function SignUp() {
   const emailRef = useRef();
@@ -22,13 +25,25 @@ export default function SignUp() {
 
     setError("");
     setLoading(true);
+
     signUp(emailRef.current.value, passwordRef.current.value)
-      .then((user) => {
-        user.user.updateProfile({
-          displayName: displayNameRef.current.value,
-        });
-        console.log("Successful sign up: ", user.user);
-        navigate("/profile");
+      .then((cred) => {
+        cred.user
+          .updateProfile({
+            displayName: displayNameRef.current.value,
+          })
+          .then(() => {
+            setDoc(doc(db, "users", cred.user.uid), {
+              uid: cred.user.uid,
+              username: cred.user.displayName,
+              credits: NEW_USER_CREDIT_AMOUNT,
+              wins: 0,
+              games_played: 0,
+              new_user: true,
+              created: serverTimestamp(),
+            });
+            navigate("/profile");
+          });
       })
       .catch((error) => {
         setLoading(false);

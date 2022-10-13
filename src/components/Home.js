@@ -21,6 +21,7 @@ const Home = () => {
     resetNewItem,
     addMove,
     addAbility,
+    removeCredits,
   } = useInventory();
   const [creditError, setCreditError] = useState(false);
   const [timeLeft, setTimeLeft] = useState(null);
@@ -61,16 +62,12 @@ const Home = () => {
 
     const num = randomNumber(pokedex[boxType].length);
     const newItem = pokedex[boxType][num];
-    console.log(newItem);
+
+    const creditCost = PRICE[boxType];
+    removeCredits(creditCost);
 
     if (boxType === "pokemon") {
-      addPokemon(newItem)
-        .then(() => {
-          console.log(`added new ${boxType}: `, newItem);
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
+      addPokemon(newItem);
     }
     if (boxType === "moves") {
       addMove(newItem);
@@ -139,15 +136,6 @@ const Home = () => {
           {timeLeft === "now" || timeLeft === null
             ? `Get ${FREQUENT_CREDIT_AMOUNT} LootCreds`
             : `More LootCreds ${timeLeft}`}
-        </button>
-        <button
-          className="btn btn-sm btn-warning"
-          onClick={() => {
-            localStorage.clear();
-            window.location.reload();
-          }}
-        >
-          Delete Profile
         </button>
       </div>
       <div className="absolute top-2 right-10">LootCreds: {credits}</div>
