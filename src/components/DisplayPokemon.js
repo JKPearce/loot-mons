@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from "react";
 import PokeCard from "./PokeCard";
 import uniqid from "uniqid";
-import { useInventory } from "../contexts/InventoryContext";
 
 //display inventory for user to select a pokemon
-const AddPokemon = ({
+const DisplayPokemon = ({
   setNewTeam,
   id,
   selectedPokemon,
-  setShowPokemonModal,
+  setDisplayPokemonInventory,
+  pokemon,
 }) => {
   const [selectedMoves, setSelectedMoves] = useState([]);
-  const { pokemon, moves } = useInventory();
+  const [error, setError] = useState();
 
-  //need to set moves to an array of 4 nulls in order to target them
   useEffect(() => {
-    console.log(selectedPokemon);
+    //need to set moves to an array of 4 nulls in order to loop / target
     if (!selectedPokemon.moves) {
       setSelectedMoves([null, null, null, null]);
     } else {
@@ -24,44 +23,60 @@ const AddPokemon = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function handleClick(pokemon) {
-    setNewTeam((prevState) => {
-      let newTeam = [...prevState];
-      const newPokemon = {
-        name: pokemon.name,
-        num: pokemon.num,
-        added: true,
-        moves: selectedMoves,
-      };
-      newTeam[id] = newPokemon;
-      return newTeam;
-    });
+  function handleClick(selectedPokemon) {
+    if (selectedPokemon.count - 1 < 0) {
+      setError("Not enough pokemon!");
+    } else {
+      setNewTeam((prevState) => {
+        let newTeam = [...prevState];
 
-    setShowPokemonModal(false);
+        const newPokemon = {
+          ...selectedPokemon,
+          added: true,
+          moves: selectedMoves,
+        };
+        newTeam[id] = newPokemon;
+        return newTeam;
+      });
+      //only changes the count to the cloned state
+      selectedPokemon.count = selectedPokemon.count - 1;
+      console.log("new count of pokemon:   ", selectedPokemon.count);
+      setDisplayPokemonInventory(false);
+    }
   }
 
   return (
+    //first div makes it so you can click outside of modal and close it
     <div
       id="modalContainer"
       onClick={(e) =>
-        e.target.id === "modalContainer" ? setShowPokemonModal(false) : null
+        e.target.id === "modalContainer"
+          ? setDisplayPokemonInventory(false)
+          : null
       }
       className="p-10 fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex flex-col justify-center items-center z-50"
     >
       <h3 className="font-bold text-lg">Pokemon Inventory</h3>
+      {error && (
+        <div className="alert alert-error shadow-lg">
+          <div>
+            <span>{error}</span>
+          </div>
+        </div>
+      )}
       <div className="modal-box min-w-full">
         <div className="grid gap-6 grid-cols-1 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-6">
           {pokemon.length !== 0 ? (
-            pokemon.map((pokemon) => (
+            pokemon.map((poke) => (
               //display the inventory here
               <button
                 type="button"
                 onClick={() => {
-                  handleClick(pokemon);
+                  handleClick(poke);
                 }}
                 key={uniqid()}
               >
-                <PokeCard key={uniqid()} pokemon={pokemon} />
+                <PokeCard key={uniqid()} pokemon={poke} />
               </button>
             ))
           ) : (
@@ -73,7 +88,7 @@ const AddPokemon = ({
         <button
           type="button"
           className="btn btn-error "
-          onClick={() => setShowPokemonModal(false)}
+          onClick={() => setDisplayPokemonInventory(false)}
         >
           Close
         </button>
@@ -82,4 +97,4 @@ const AddPokemon = ({
   );
 };
 
-export default AddPokemon;
+export default DisplayPokemon;

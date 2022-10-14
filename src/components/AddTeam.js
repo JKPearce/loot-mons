@@ -1,19 +1,24 @@
 import React, { useState } from "react";
-import AddPokemon from "./AddPokemon";
+import DisplayPokemon from "./DisplayPokemon";
 import PokeCard from "./PokeCard";
 import uniqid from "uniqid";
 import { useTeams } from "../contexts/TeamContext";
 import { useInventory } from "../contexts/InventoryContext";
 import { useNavigate } from "react-router-dom";
+import * as _ from "lodash";
 
 const AddTeam = () => {
   const [newTeam, setNewTeam] = useState([{}, {}, {}, {}, {}, {}]);
   const { addTeam } = useTeams();
-  const { moves } = useInventory();
+  const { moves, pokemon } = useInventory();
   const navigate = useNavigate();
 
+  // cloning the pokemon inv state so a forced page reload isn't
+  // needed this means no need to re-read database
+  const [localPokemon] = useState(_.cloneDeep(pokemon));
+
   const [pokemonTeamPosition, setPokemonTeamPosition] = useState(false);
-  const [showPokemonModal, setShowPokemonModal] = useState(true);
+  const [displayPokemonInventory, setDisplayPokemonInventory] = useState(true);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -78,7 +83,7 @@ const AddTeam = () => {
 
   function addNewPokemonAtTeamPosition(i) {
     setPokemonTeamPosition(i);
-    setShowPokemonModal(true);
+    setDisplayPokemonInventory(true);
   }
 
   return (
@@ -92,14 +97,15 @@ const AddTeam = () => {
                 key={uniqid()}
               >
                 {/* if the team position is = the button index you clicked then show the add new pokemon modal  */}
-                {pokemonTeamPosition === i && showPokemonModal ? (
+                {pokemonTeamPosition === i && displayPokemonInventory ? (
                   // sends details of the current position to the modal to use as default values in drop downs
-                  <AddPokemon
+                  <DisplayPokemon
+                    pokemon={localPokemon}
                     id={i}
                     selectedPokemon={poke}
                     setNewTeam={setNewTeam}
-                    setShowPokemonModal={setShowPokemonModal}
-                    selectingPokemon={showPokemonModal}
+                    setDisplayPokemonInventory={setDisplayPokemonInventory}
+                    selectingPokemon={displayPokemonInventory}
                   />
                 ) : poke.added ? (
                   <>

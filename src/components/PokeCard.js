@@ -13,7 +13,7 @@ const PokeCard = ({ pokemon, newPokemon }) => {
         />
       </figure>
       <div className="card-body text-sm">
-        <h2 className="card-title">
+        <h2 className="card-title text-center">
           {pokemon.name}!{pokemon.count && `  (${pokemon.count})`}
         </h2>
         {newPokemon && <p>{pokemon.name} has been added to your inventory!</p>}

@@ -25,7 +25,7 @@ const Inventory = () => {
             <table className="table table-zebra w-full">
               <tbody>
                 {moves.map((move, i) => (
-                  <tr>
+                  <tr key={i}>
                     <td>{move.name}</td>
                     <td>{move.count}</td>
                   </tr>
@@ -42,7 +42,7 @@ const Inventory = () => {
             <table className="table table-zebra w-full">
               <tbody>
                 {abilities.map((ability, i) => (
-                  <tr>
+                  <tr key={i}>
                     <td>{ability.name}</td>
                     <td>{ability.count}</td>
                   </tr>

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import AddTeam from "./AddTeam";
 import PokeCard from "./PokeCard";
 import uniqid from "uniqid";
 import { BsClipboardCheck } from "react-icons/bs";
@@ -7,7 +6,7 @@ import { useTeams } from "../contexts/TeamContext";
 import { Link } from "react-router-dom";
 
 export default function Teams() {
-  const { teamList, addTeam } = useTeams();
+  const { teamList } = useTeams();
   const [copyText, setCopyText] = useState("Copy");
 
   function exportTeam(team) {
@@ -44,18 +43,16 @@ export default function Teams() {
 
   return (
     <div className="">
-      <div className="flex flex-col text-center gap-10">
-        {console.log(teamList)}
-        <h1 className="p-4 text-center text-5xl font-bold">Teams</h1>
+      <h1 className="p-4 text-center text-5xl font-bold">Teams</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 text-center gap-5 p-5">
         {teamList &&
           teamList.map((team, i) => {
             return (
-              <div
-                key={uniqid()}
-                className="grid grid-cols-1 sm:grid-cols-3 gap-y-5"
-              >
-                <div className=" py-5 col-span-1 sm:col-span-3 flex items-center justify-center ">
-                  <h3 className="text-center text-2xl">Team</h3>
+              <div key={uniqid()} className="card bg-base-100 shadow-lg border">
+                <div className=" py-5 flex items-center justify-center bg-base-300 ">
+                  <h3 className="text-center col-span-3 text-2xl">
+                    TEAM NAME HERE
+                  </h3>
                   <div className="tooltip" data-tip={copyText}>
                     <button
                       onClick={() => exportTeam(team.pokemon)}
@@ -66,28 +63,36 @@ export default function Teams() {
                     </button>
                   </div>
                 </div>
-                {team.pokemon.map((pokemon) => {
-                  return (
-                    pokemon.added && (
-                      <div key={uniqid()} className="p-5">
-                        <PokeCard key={uniqid()} pokemon={pokemon} />
-                        {pokemon.moves &&
-                          pokemon.moves.map((move) => (
-                            <div key={uniqid()} className="mt-4">
-                              <p>{move}</p>
-                            </div>
-                          ))}
-                      </div>
-                    )
-                  );
-                })}
+                <div className="p-2 gap-2 bg-base-100 grid grid-cols-3">
+                  {team.pokemon.map((pokemon) => {
+                    return (
+                      pokemon.added && (
+                        <div className="card p-5">
+                          <img
+                            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.num}.png`}
+                            alt={pokemon.name}
+                          />
+                          <h3 className="">{pokemon.name}</h3>
+                          <div>
+                            {pokemon.moves &&
+                              pokemon.moves.map((move) => (
+                                <div key={uniqid()} className="mt-4">
+                                  <p>{move}</p>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+                      )
+                    );
+                  })}
+                </div>
               </div>
             );
           })}
-        <Link to="/add-team">
-          <button className="btn m-5">Add new Team</button>
-        </Link>
       </div>
+      <Link to="/add-team">
+        <button className="btn m-5">Add new Team</button>
+      </Link>
     </div>
   );
 }
