@@ -31,14 +31,14 @@ export function InventoryProvider({ children }) {
     if (checkForDupe(newPokemon, pokemon)) {
       console.log("update doc");
       return updateDoc(
-        doc(db, `inventory/${currentUser.uid}/pokemon/${newPokemon.name}`),
+        doc(db, `users/${currentUser.uid}/pokemon/${newPokemon.name}`),
         {
           count: increment(1),
         }
       );
     } else {
       return setDoc(
-        doc(db, `inventory/${currentUser.uid}/pokemon`, newPokemon.name),
+        doc(db, `users/${currentUser.uid}/pokemon`, newPokemon.name),
         {
           ...newPokemon,
           count: 1,
@@ -52,19 +52,16 @@ export function InventoryProvider({ children }) {
 
     if (checkForDupe(newMove, moves)) {
       return updateDoc(
-        doc(db, `inventory/${currentUser.uid}/moves/${newMove.name}`),
+        doc(db, `users/${currentUser.uid}/moves/${newMove.name}`),
         {
           count: increment(1),
         }
       );
     } else {
-      return setDoc(
-        doc(db, `inventory/${currentUser.uid}/moves`, newMove.name),
-        {
-          ...newMove,
-          count: 1,
-        }
-      );
+      return setDoc(doc(db, `users/${currentUser.uid}/moves`, newMove.name), {
+        ...newMove,
+        count: 1,
+      });
     }
   }
 
@@ -73,14 +70,14 @@ export function InventoryProvider({ children }) {
 
     if (checkForDupe(newAbility, abilities)) {
       return updateDoc(
-        doc(db, `inventory/${currentUser.uid}/abilities/${newAbility.name}`),
+        doc(db, `users/${currentUser.uid}/abilities/${newAbility.name}`),
         {
           count: increment(1),
         }
       );
     } else {
       return setDoc(
-        doc(db, `inventory/${currentUser.uid}/abilities`, newAbility.name),
+        doc(db, `users/${currentUser.uid}/abilities`, newAbility.name),
         {
           ...newAbility,
           count: 1,
@@ -111,12 +108,9 @@ export function InventoryProvider({ children }) {
 
   useEffect(() => {
     if (currentUser) {
-      const pokemonRef = collection(db, `inventory/${currentUser.uid}/pokemon`);
-      const movesRef = collection(db, `inventory/${currentUser.uid}/moves`);
-      const abilitiesRef = collection(
-        db,
-        `inventory/${currentUser.uid}/abilities`
-      );
+      const pokemonRef = collection(db, `users/${currentUser.uid}/pokemon`);
+      const movesRef = collection(db, `users/${currentUser.uid}/moves`);
+      const abilitiesRef = collection(db, `users/${currentUser.uid}/abilities`);
       const userRef = doc(db, `users/${currentUser.uid}`);
 
       onSnapshot(pokemonRef, (snapshot) => {

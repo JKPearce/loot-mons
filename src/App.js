@@ -10,11 +10,13 @@ import PrivateRoute from "./components/PrivateRoute";
 import Profile from "./components/Profile";
 import SignUp from "./components/SignUp";
 import SubmitReplay from "./components/SubmitReplay";
-import TeamBuilder from "./components/TeamBuilder";
 import ChangePassword from "./components/ChangePassword";
 import { useAuth } from "./contexts/AuthContext";
 import { InventoryProvider } from "./contexts/InventoryContext";
 import { PokedexProvider } from "./contexts/PokedexContext";
+import { TeamsProvider } from "./contexts/TeamContext";
+import Teams from "./components/Teams";
+import AddTeam from "./components/AddTeam";
 
 function App() {
   const { currentUser } = useAuth();
@@ -23,31 +25,34 @@ function App() {
     <>
       <PokedexProvider>
         <InventoryProvider>
-          <Nav />
-          <Routes>
-            <Route element={<PrivateRoute />}>
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/change-password" element={<ChangePassword />} />
-              <Route exact path="/" element={<Home />} />
-            </Route>
-            <Route
-              path="/signup"
-              element={
-                !currentUser ? <SignUp /> : <Navigate to="/" replace={true} />
-              }
-            />
-            <Route
-              path="/login"
-              element={
-                !currentUser ? <LogIn /> : <Navigate to="/" replace={true} />
-              }
-            />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/submit-replay" element={<SubmitReplay />} />
-            <Route path="/team-builder" element={<TeamBuilder />} />
-            <Route path="*" element={<p>Page does not exist</p>} />
-          </Routes>
+          <TeamsProvider>
+            <Nav />
+            <Routes>
+              <Route element={<PrivateRoute />}>
+                <Route exact path="/" element={<Home />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/change-password" element={<ChangePassword />} />
+                <Route path="/inventory" element={<Inventory />} />
+                <Route path="/submit-replay" element={<SubmitReplay />} />
+                <Route path="/teams" element={<Teams />} />
+                <Route path="/add-team" element={<AddTeam />} />
+              </Route>
+              <Route
+                path="/signup"
+                element={
+                  !currentUser ? <SignUp /> : <Navigate to="/" replace={true} />
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  !currentUser ? <LogIn /> : <Navigate to="/" replace={true} />
+                }
+              />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="*" element={<p>Page does not exist</p>} />
+            </Routes>
+          </TeamsProvider>
         </InventoryProvider>
       </PokedexProvider>
     </>

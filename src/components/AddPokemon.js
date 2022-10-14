@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from "react";
 import PokeCard from "./PokeCard";
 import uniqid from "uniqid";
+import { useInventory } from "../contexts/InventoryContext";
 
 //display inventory for user to select a pokemon
 const AddPokemon = ({
-  inventory,
   setNewTeam,
   id,
+  selectedPokemon,
   setShowPokemonModal,
-  pokemon,
 }) => {
-  const [moves, setMoves] = useState([]);
+  const [selectedMoves, setSelectedMoves] = useState([]);
+  const { pokemon, moves } = useInventory();
 
   //need to set moves to an array of 4 nulls in order to target them
   useEffect(() => {
-    if (!pokemon.moves) {
-      setMoves([null, null, null, null]);
+    console.log(selectedPokemon);
+    if (!selectedPokemon.moves) {
+      setSelectedMoves([null, null, null, null]);
     } else {
-      setMoves([...pokemon.moves]);
+      setSelectedMoves([...selectedPokemon.moves]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -29,7 +31,7 @@ const AddPokemon = ({
         name: pokemon.name,
         num: pokemon.num,
         added: true,
-        moves: moves,
+        moves: selectedMoves,
       };
       newTeam[id] = newPokemon;
       return newTeam;
@@ -49,8 +51,8 @@ const AddPokemon = ({
       <h3 className="font-bold text-lg">Pokemon Inventory</h3>
       <div className="modal-box min-w-full">
         <div className="grid gap-6 grid-cols-1 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-6">
-          {inventory.pokemon.length !== 0 ? (
-            inventory.pokemon.map((pokemon) => (
+          {pokemon.length !== 0 ? (
+            pokemon.map((pokemon) => (
               //display the inventory here
               <button
                 type="button"

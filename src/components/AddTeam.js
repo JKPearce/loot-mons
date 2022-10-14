@@ -2,17 +2,31 @@ import React, { useState } from "react";
 import AddPokemon from "./AddPokemon";
 import PokeCard from "./PokeCard";
 import uniqid from "uniqid";
+import { useTeams } from "../contexts/TeamContext";
+import { useInventory } from "../contexts/InventoryContext";
+import { useNavigate } from "react-router-dom";
 
-const AddTeam = ({ setTeamList, teamList, setDisplayAddTeam, inventory }) => {
+const AddTeam = () => {
   const [newTeam, setNewTeam] = useState([{}, {}, {}, {}, {}, {}]);
-  const [teamPosition, setTeamPosition] = useState(false);
+  const { addTeam } = useTeams();
+  const { moves } = useInventory();
+  const navigate = useNavigate();
+
+  const [pokemonTeamPosition, setPokemonTeamPosition] = useState(false);
   const [showPokemonModal, setShowPokemonModal] = useState(true);
 
   function handleSubmit(e) {
     e.preventDefault();
-    setTeamList((prevState) => [...prevState, newTeam]);
-    localStorage.setItem("teams", [JSON.stringify([...teamList, newTeam])]);
-    setDisplayAddTeam(false);
+    addTeam(newTeam)
+      .then(() => {
+        console.log("Adding team: ", newTeam);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        navigate("/teams");
+      });
   }
 
   function handleMoveSelected(e, moveNumber, pokemonTeamPosition) {
@@ -44,7 +58,7 @@ const AddTeam = ({ setTeamList, teamList, setDisplayAddTeam, inventory }) => {
           <option key={uniqid()} disabled>
             {`Move ${i}`}
           </option>
-          {inventory.moves.map((move) => {
+          {moves.map((move) => {
             if (moveListNames.includes(move.name)) {
               return <></>;
             } else {
@@ -62,8 +76,8 @@ const AddTeam = ({ setTeamList, teamList, setDisplayAddTeam, inventory }) => {
     return moveListElements;
   };
 
-  function handleAdd(i) {
-    setTeamPosition(i);
+  function addNewPokemonAtTeamPosition(i) {
+    setPokemonTeamPosition(i);
     setShowPokemonModal(true);
   }
 
@@ -72,31 +86,35 @@ const AddTeam = ({ setTeamList, teamList, setDisplayAddTeam, inventory }) => {
       <div className="container">
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 place-content-center">
-            {newTeam.map((pokemon, i) => (
+            {newTeam.map((poke, i) => (
               <div
                 className="flex flex-col place-items-center p-5"
                 key={uniqid()}
               >
-                {teamPosition === i && showPokemonModal ? (
+                {/* if the team position is = the button index you clicked then show the add new pokemon modal  */}
+                {pokemonTeamPosition === i && showPokemonModal ? (
+                  // sends details of the current position to the modal to use as default values in drop downs
                   <AddPokemon
                     id={i}
-                    pokemon={pokemon}
+                    selectedPokemon={poke}
                     setNewTeam={setNewTeam}
-                    inventory={inventory}
                     setShowPokemonModal={setShowPokemonModal}
                     selectingPokemon={showPokemonModal}
                   />
-                ) : pokemon.added ? (
+                ) : poke.added ? (
                   <>
-                    <button type="button" onClick={() => handleAdd(i)}>
-                      <PokeCard pokemon={pokemon} />
+                    <button
+                      type="button"
+                      onClick={() => addNewPokemonAtTeamPosition(i)}
+                    >
+                      <PokeCard pokemon={poke} />
                     </button>
                     {/* sends current value to be used as pokemonTeamPosition */}
                     {moveDropDown(i)}
                   </>
                 ) : (
                   <button
-                    onClick={() => handleAdd(i)}
+                    onClick={() => addNewPokemonAtTeamPosition(i)}
                     type="button"
                     className="btn btn-lg btn-accent"
                   >
@@ -108,7 +126,7 @@ const AddTeam = ({ setTeamList, teamList, setDisplayAddTeam, inventory }) => {
           </div>
           <button
             className="btn btn-error"
-            onClick={() => setDisplayAddTeam(false)}
+            onClick={() => navigate("/teams")}
             type="button"
           >
             Cancel
