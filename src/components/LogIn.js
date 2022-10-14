@@ -19,7 +19,6 @@ export default function LogIn() {
     logIn(emailRef.current.value, passwordRef.current.value)
       .then((user) => {
         console.log("successful sign in");
-        navigate("/");
       })
       .catch((error) => {
         setLoading(false);
@@ -28,6 +27,7 @@ export default function LogIn() {
       })
       .finally(() => {
         setLoading(false);
+        navigate("/");
       });
   }
 
