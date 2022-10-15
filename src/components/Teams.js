@@ -67,11 +67,12 @@ export default function Teams() {
                   {team.pokemon.map((pokemon) => {
                     return (
                       pokemon.added && (
-                        <div className="card p-5">
+                        <div key={uniqid()} className="card p-5">
                           <img
                             src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.num}.png`}
                             alt={pokemon.name}
                           />
+
                           <h3 className="">{pokemon.name}</h3>
                           <div>
                             {pokemon.moves &&

@@ -1,46 +1,63 @@
 import React, { useState, useEffect } from "react";
 import PokeCard from "./PokeCard";
 import uniqid from "uniqid";
+import * as _ from "lodash";
 
 //display inventory for user to select a pokemon
 const DisplayPokemon = ({
   setNewTeam,
   id,
-  selectedPokemon,
+  pokemonAtTeamPosition,
   setDisplayPokemonInventory,
-  pokemon,
+  localPokemon,
 }) => {
   const [selectedMoves, setSelectedMoves] = useState([]);
   const [error, setError] = useState();
 
   useEffect(() => {
     //need to set moves to an array of 4 nulls in order to loop / target
-    if (!selectedPokemon.moves) {
+    if (!pokemonAtTeamPosition.moves) {
       setSelectedMoves([null, null, null, null]);
     } else {
-      setSelectedMoves([...selectedPokemon.moves]);
+      setSelectedMoves([...pokemonAtTeamPosition.moves]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function handleClick(selectedPokemon) {
-    if (selectedPokemon.count - 1 < 0) {
+  function handleClick(poke, i) {
+    if (!_.isEmpty(pokemonAtTeamPosition)) {
+      //this checks if the player is selecting the same pokemon and increments
+      //the count so they can actually select it
+      if (pokemonAtTeamPosition.name === poke.name) {
+        poke.count++;
+      } else if (poke.count > 0) {
+        //this checks if the player has selected a pokemon that they have enough of in their inventory
+        //then it increases the pokemon count of the pokemon that was at the team spot
+        //this essentially refunds the pokemon if they chose another at the same slot
+        const pokemonInLocalStorage = _.find(localPokemon, (pokemon) => {
+          return pokemon.name === pokemonAtTeamPosition.name;
+        });
+        pokemonInLocalStorage.count++;
+        console.log(localPokemon);
+      }
+    }
+
+    if (poke.count <= 0) {
       setError("Not enough pokemon!");
     } else {
+      poke.count--;
       setNewTeam((prevState) => {
         let newTeam = [...prevState];
 
         const newPokemon = {
-          ...selectedPokemon,
+          ...poke,
           added: true,
           moves: selectedMoves,
         };
         newTeam[id] = newPokemon;
+
         return newTeam;
       });
-      //only changes the count to the cloned state
-      selectedPokemon.count = selectedPokemon.count - 1;
-      console.log("new count of pokemon:   ", selectedPokemon.count);
       setDisplayPokemonInventory(false);
     }
   }
@@ -66,13 +83,13 @@ const DisplayPokemon = ({
       )}
       <div className="modal-box min-w-full">
         <div className="grid gap-6 grid-cols-1 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-6">
-          {pokemon.length !== 0 ? (
-            pokemon.map((poke) => (
+          {localPokemon.length !== 0 ? (
+            localPokemon.map((poke, i) => (
               //display the inventory here
               <button
                 type="button"
                 onClick={() => {
-                  handleClick(poke);
+                  handleClick(poke, i);
                 }}
                 key={uniqid()}
               >
