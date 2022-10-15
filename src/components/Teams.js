@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PokeCard from "./PokeCard";
 import uniqid from "uniqid";
 import { BsClipboardCheck } from "react-icons/bs";
 import { useTeams } from "../contexts/TeamContext";
@@ -51,7 +50,7 @@ export default function Teams() {
               <div key={uniqid()} className="card bg-base-100 shadow-lg border">
                 <div className=" py-5 flex items-center justify-center bg-base-300 ">
                   <h3 className="text-center col-span-3 text-2xl">
-                    TEAM NAME HERE
+                    {team.team_name}
                   </h3>
                   <div className="tooltip" data-tip={copyText}>
                     <button

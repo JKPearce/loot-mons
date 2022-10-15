@@ -4,7 +4,7 @@ import uniqid from "uniqid";
 import { useTeams } from "../contexts/TeamContext";
 import { useInventory } from "../contexts/InventoryContext";
 import { useNavigate } from "react-router-dom";
-import { cloneDeep, cloneDeepWith } from "lodash";
+import { cloneDeep } from "lodash";
 
 const AddTeam = () => {
   const [newTeam, setNewTeam] = useState([{}, {}, {}, {}, {}, {}]);
@@ -13,12 +13,14 @@ const AddTeam = () => {
   const navigate = useNavigate();
   const [localPokemon, setLocalPokemon] = useState();
   const teamNameRef = useRef();
+  const [loading, setLoading] = useState(false);
 
   const [pokemonTeamPosition, setPokemonTeamPosition] = useState(false);
   const [displayPokemonInventory, setDisplayPokemonInventory] = useState(false);
 
   function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true);
     addTeam(newTeam, teamNameRef.current.value)
       .then(() => {
         console.log("Adding team: ", newTeam);
@@ -27,6 +29,7 @@ const AddTeam = () => {
         console.log(error);
       })
       .finally(() => {
+        setLoading(false);
         navigate("/teams");
       });
   }
@@ -90,9 +93,9 @@ const AddTeam = () => {
   }, []);
 
   return (
-    <>
-      <div className="p-5">
-        <form className="gap-3 flex flex-col" onSubmit={handleSubmit}>
+    <div className="">
+      <form className="relative min-h-screen" onSubmit={handleSubmit}>
+        <div className=" gap-3 flex flex-col">
           <div className="form-control flex place-content-center">
             <label className="label">
               <span className="label-text">Team Name</span>
@@ -104,7 +107,7 @@ const AddTeam = () => {
               defaultValue={`Team ${teamList.length + 1}`}
             ></input>
           </div>
-          <div className="grid place-items-center grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 place-content-center">
+          <div className="grid place-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 place-content-center">
             {newTeam.map((poke, i) => (
               <div
                 className="card p-5 border border-base-content border-opacity-20 bg-base-100 shadow-lg w-full h-full place-content-center "
@@ -124,23 +127,49 @@ const AddTeam = () => {
                 ) : poke.added ? (
                   <>
                     <div className="grid grid-cols-2 gap-2">
-                      <button
-                        className="btn h-min w-full border border-base-300 shadow-sm p-3"
-                        type="button"
-                        onClick={() => addNewPokemonAtTeamPosition(i)}
-                      >
-                        <figure>
-                          <img
-                            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.num}.png`}
-                            alt={poke.name}
-                          />
-                        </figure>
-                        <div>{poke.name}</div>
-                      </button>
-                      <div className="gap-3 flex flex-col">
-                        {/* sends current ID to be used as pokemonTeamPosition */}
-                        {moveDropDown(i)}
+                      <div className="flex flex-col justify-between col-start-1 row-span-3">
+                        <button
+                          className="btn h-full w-full border border-base-300 shadow-sm p-5"
+                          type="button"
+                          onClick={() => addNewPokemonAtTeamPosition(i)}
+                        >
+                          <figure className="h-full">
+                            <img
+                              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.num}.png`}
+                              alt={poke.name}
+                            />
+                          </figure>
+                          <div className="break-words">{poke.name}</div>
+                        </button>
                       </div>
+                      <div>
+                        <select className="select select-bordered w-full max-w-xs">
+                          <option>Ability</option>
+                        </select>
+                      </div>
+                      <div className="row-start-1 col-start-2">
+                        <select className="select select-bordered w-full max-w-xs">
+                          <option>Move 1</option>
+                        </select>
+                      </div>
+                      <div className="row-start-2 col-start-2">
+                        <select className="select select-bordered w-full max-w-xs">
+                          <option>Move 2</option>
+                        </select>
+                      </div>
+                      <div className="row-start-3 col-start-2">
+                        <select className="select select-bordered w-full max-w-xs">
+                          <option>Move 3</option>
+                        </select>
+                      </div>
+                      <div className="row-start-4 col-start-2">
+                        <select className="select select-bordered w-full max-w-xs">
+                          <option>Move 4</option>
+                        </select>
+                      </div>
+
+                      {/* sends current ID to be used as pokemonTeamPosition */}
+                      {/* {moveDropDown(i)} */}
                     </div>
                   </>
                 ) : (
@@ -155,6 +184,8 @@ const AddTeam = () => {
               </div>
             ))}
           </div>
+        </div>
+        <div className="w-full sticky bottom-0 flex gap-3 place-content-center bg-neutral p-2 sm:bg-none">
           <button
             className="btn btn-error"
             onClick={() => navigate("/teams")}
@@ -162,14 +193,16 @@ const AddTeam = () => {
           >
             Cancel
           </button>
-          <input
-            className="btn btn-success"
+          <button
+            disabled={loading}
+            className="btn btn-success btn-md"
             type={"submit"}
-            value={"Save"}
-          ></input>
-        </form>
-      </div>
-    </>
+          >
+            {loading ? `Loading...` : `Save`}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 
