@@ -15,6 +15,7 @@ const Home = () => {
     addMove,
     addAbility,
     removeCredits,
+    loadingCredits,
   } = useInventory();
   const [creditError, setCreditError] = useState(false);
   // const [timeLeft, setTimeLeft] = useState(null);
@@ -77,6 +78,7 @@ const Home = () => {
   return (
     <div className="relative flex flex-col place-items-center p-5">
       <h1 className="p-4 text-center text-5xl font-bold ">Loot-Mons</h1>
+
       <div className="h-60 w-40 ">
         {newItem ? (
           newItem[0] === "pokemon" ? (
@@ -95,20 +97,26 @@ const Home = () => {
           </div>
         )}
       </div>
-      <div className="flex gap-4 flex-col">
-        <button className="btn btn-md" onClick={() => openSingleBox("pokemon")}>
-          Open Pokemon Box ({PRICE.pokemon} LootCreds)
-        </button>
-        <button className="btn btn-md" onClick={() => openSingleBox("moves")}>
-          Open Move Box ({PRICE.moves} LootCreds)
-        </button>
-        <button
-          className="btn btn-md"
-          onClick={() => openSingleBox("abilities")}
-        >
-          Open Ability Box ({PRICE.abilities} LootCreds)
-        </button>
-        {/* <button
+      {loadingCredits ? (
+        "Loading..."
+      ) : (
+        <div className="flex gap-4 flex-col">
+          <button
+            className="btn btn-md"
+            onClick={() => openSingleBox("pokemon")}
+          >
+            Open Pokemon Box ({PRICE.pokemon} LootCreds)
+          </button>
+          <button className="btn btn-md" onClick={() => openSingleBox("moves")}>
+            Open Move Box ({PRICE.moves} LootCreds)
+          </button>
+          <button
+            className="btn btn-md"
+            onClick={() => openSingleBox("abilities")}
+          >
+            Open Ability Box ({PRICE.abilities} LootCreds)
+          </button>
+          {/* <button
           disabled={buttonDisabled}
           className="btn btn-md"
           onClick={addCredits}
@@ -117,8 +125,11 @@ const Home = () => {
             ? `Get ${FREQUENT_CREDIT_AMOUNT} LootCreds`
             : `More LootCreds ${timeLeft}`}
         </button> */}
+        </div>
+      )}
+      <div className="absolute top-2 right-10">
+        LootCreds: {loadingCredits ? "Loading..." : credits}
       </div>
-      <div className="absolute top-2 right-10">LootCreds: {credits}</div>
     </div>
   );
 };
