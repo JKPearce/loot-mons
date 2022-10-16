@@ -9,7 +9,7 @@ import { cloneDeep, isEmpty } from "lodash";
 const AddTeam = () => {
   const [newTeam, setNewTeam] = useState([{}, {}, {}, {}, {}, {}]);
   const { addTeam, teamList } = useTeams();
-  const { moves, pokemon, abilities } = useInventory();
+  const { moves, pokemon, abilities, pokemonLoading } = useInventory();
   const navigate = useNavigate();
   const [localPokemon, setLocalPokemon] = useState(cloneDeep(pokemon));
   const teamNameRef = useRef();
@@ -117,19 +117,14 @@ const AddTeam = () => {
     // cloning the pokemon inv state to remove the count from a
     // different array other than the main pokemon array state
     // this means that the player dosnt need to refresh the page to fix their inv
-    if (isEmpty(pokemon)) {
-      setLoading(true);
-    } else {
-      //make sure local pokemon gets cloned after it loads context
-      setLoading(false);
-      setLocalPokemon(cloneDeep(pokemon));
-    }
+    setLocalPokemon(cloneDeep(pokemon));
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pokemon]);
 
   return (
     <div className="">
-      {loading ? (
+      {pokemonLoading ? (
         <div className="p-10 flex place-content-center min-h-screen w-full">
           <progress className="progress w-full"></progress>
         </div>

@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import uniqid from "uniqid";
 import { useTeams } from "../contexts/TeamContext";
 import { Link } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
+import * as _ from "lodash";
 
 export default function Teams() {
-  const { teamList } = useTeams();
+  const { teamList, teamsLoading } = useTeams();
   const [copyText, setCopyText] = useState("Copy");
-  const [loading, setLoading] = useState(true);
 
   function exportTeam(team) {
     //export team to text format able to be used in pokemonshowdown import
@@ -42,17 +42,10 @@ export default function Teams() {
     }, 2000);
   }
 
-  useEffect(() => {
-    console.log(teamList);
-    if (teamList.length > 0) {
-      setLoading(false);
-    }
-  }, [teamList]);
-
   return (
-    <div className="">
-      {loading ? (
-        <progress className="progress w-full"></progress>
+    <div className="flex flex-col">
+      {teamsLoading ? (
+        <progress className="progress w-1/2 self-center my-40"></progress>
       ) : (
         <div className="flex flex-col place-content-center gap-5 p-5">
           {teamList.map((team, i) => {
@@ -77,46 +70,46 @@ export default function Teams() {
                 <div className="grid grid-cols-3 sm:grid-cols-6 p-2 gap-2">
                   {team.pokemon.map((pokemon, j) => {
                     return (
-                      <div
-                        className="p-5"
-                        data-tip
-                        data-for={`${i}${j}`}
-                        key={uniqid()}
-                      >
-                        <figure className="btn btn-ghost h-full btn-active shadow-md">
-                          <img
-                            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.num}.png`}
-                            alt={pokemon.name}
-                          />
-                        </figure>
-                        {/* id of ij means team x pokemon y so each id is different */}
-                        <ReactTooltip id={`${i}${j}`}>
-                          <div key={uniqid()} className="">
-                            <div>
-                              <h3 className="font-bold text-xl border-b-accent border-b">
-                                {pokemon.name}
-                              </h3>
-                              {pokemon.ability && (
-                                <p className="text-lg">{`Ability: ${pokemon.ability}`}</p>
-                              )}
-                            </div>
-                            <table className=" table-compact">
-                              <tbody>
-                                {pokemon.moves.map((move, k) => {
-                                  return (
-                                    move && (
+                      !_.isEmpty(pokemon) && (
+                        <div
+                          className="p-5"
+                          data-tip
+                          data-for={`${i}${j}`}
+                          key={uniqid()}
+                        >
+                          <figure className="btn btn-ghost h-full btn-active shadow-md">
+                            <img
+                              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.num}.png`}
+                              alt={pokemon.name}
+                            />
+                          </figure>
+                          {/* id of ij means team x pokemon y so each id is different */}
+                          <ReactTooltip id={`${i}${j}`}>
+                            <div key={uniqid()} className="">
+                              <div>
+                                <h3 className="font-bold text-xl border-b-accent border-b">
+                                  {pokemon.name}
+                                </h3>
+                                {pokemon.ability && (
+                                  <p className="text-lg">{`Ability: ${pokemon.ability}`}</p>
+                                )}
+                              </div>
+                              <table className=" table-compact">
+                                <tbody>
+                                  {pokemon.moves.map((move, k) => {
+                                    return (
                                       <tr key={uniqid()}>
                                         <td>{`Move ${k + 1}:`}</td>
-                                        <td>{move}</td>
+                                        <td>{move ? move : "No move"}</td>
                                       </tr>
-                                    )
-                                  );
-                                })}
-                              </tbody>
-                            </table>
-                          </div>
-                        </ReactTooltip>
-                      </div>
+                                    );
+                                  })}
+                                </tbody>
+                              </table>
+                            </div>
+                          </ReactTooltip>
+                        </div>
+                      )
                     );
                   })}
                 </div>

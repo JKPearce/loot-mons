@@ -23,6 +23,10 @@ export function InventoryProvider({ children }) {
   const [abilities, setAbilities] = useState([]);
   const [credits, setCredits] = useState();
   const [newItem, setNewItem] = useState();
+  const [loadingPokemon, setLoadingPokemon] = useState(true);
+  const [loadingMoves, setLoadingMoves] = useState(true);
+  const [loadingAbilities, setLoadingAbilities] = useState(true);
+  const [loadingCredits, setLoadingCredits] = useState(true);
 
   function addPokemon(newPokemon) {
     //set the newest item so it can be displayed
@@ -91,7 +95,6 @@ export function InventoryProvider({ children }) {
     const result = currentObject.some(
       (current) => current.name === newObject.name
     );
-    console.log("duplicate = ", result);
     return result;
   }
 
@@ -113,35 +116,45 @@ export function InventoryProvider({ children }) {
       const abilitiesRef = collection(db, `users/${currentUser.uid}/abilities`);
       const userRef = doc(db, `users/${currentUser.uid}`);
 
-      onSnapshot(pokemonRef, (snapshot) => {
+      const unsubscribePokemon = onSnapshot(pokemonRef, (snapshot) => {
         const pokemonArray = [];
 
         snapshot.docs.forEach((doc) => {
           pokemonArray.push({ ...doc.data() });
         });
         setPokemon(pokemonArray);
+        setLoadingPokemon(false);
       });
 
-      onSnapshot(movesRef, (snapshot) => {
+      const unsubscribeMoves = onSnapshot(movesRef, (snapshot) => {
         const moveArray = [];
         snapshot.docs.forEach((doc) => {
           moveArray.push({ ...doc.data() });
         });
         setMoves(moveArray);
+        setLoadingMoves(false);
       });
 
-      onSnapshot(abilitiesRef, (snapshot) => {
+      const unsubscribeAbilities = onSnapshot(abilitiesRef, (snapshot) => {
         const abilitiesArray = [];
         snapshot.docs.forEach((doc) => {
           abilitiesArray.push({ ...doc.data() });
         });
         setAbilities(abilitiesArray);
+        setLoadingAbilities(false);
       });
 
-      onSnapshot(userRef, (snapshot) => {
+      const unsubscribeCredits = onSnapshot(userRef, (snapshot) => {
         setCredits(snapshot.data().credits);
-        console.log("credit snapshot", snapshot.data().credits);
+        setLoadingCredits(false);
       });
+
+      return () => {
+        unsubscribeAbilities();
+        unsubscribeCredits();
+        unsubscribeMoves();
+        unsubscribePokemon();
+      };
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -153,6 +166,10 @@ export function InventoryProvider({ children }) {
     abilities,
     credits,
     newItem,
+    loadingPokemon,
+    loadingMoves,
+    loadingAbilities,
+    loadingCredits,
     addPokemon,
     addMove,
     addAbility,

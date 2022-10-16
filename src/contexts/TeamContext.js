@@ -16,23 +16,27 @@ export function useTeams() {
 
 export function TeamsProvider({ children }) {
   const { currentUser } = useAuth();
+  const [teamsLoading, setTeamsLoading] = useState(true);
 
   const [teamList, setTeamList] = useState([]);
 
   useEffect(() => {
     if (currentUser) {
-      onSnapshot(
+      const unsubscribe = onSnapshot(
         collection(db, `users/${currentUser.uid}/teams`),
         (snapshot) => {
           const teamListArray = [];
           snapshot.docs.forEach((team) => {
             teamListArray.push({ ...team.data() });
           });
-
           setTeamList(teamListArray);
+          setTeamsLoading(false);
         }
       );
+
+      return () => unsubscribe();
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -47,6 +51,7 @@ export function TeamsProvider({ children }) {
   const value = {
     teamList,
     addTeam,
+    teamsLoading,
   };
   return <TeamContext.Provider value={value}>{children}</TeamContext.Provider>;
 }
