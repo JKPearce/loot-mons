@@ -38,7 +38,6 @@ const DisplayPokemon = ({
           return pokemon.name === pokemonAtTeamPosition.name;
         });
         pokemonInLocalStorage.count++;
-        console.log(localPokemon);
       }
     }
 
