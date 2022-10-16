@@ -55,7 +55,7 @@ const AddTeam = () => {
     let moveListElements = [];
     for (let i = 1; i < 5; i++) {
       moveListElements.push(
-        <div className={`row-start-${i} col-start-2`}>
+        <div key={uniqid()} className={`row-start-${i} col-start-2`}>
           <select
             onChange={(e) => handleMoveSelected(e, i, pokemonTeamPosition)}
             value={
@@ -165,60 +165,57 @@ const AddTeam = () => {
                       setDisplayPokemonInventory={setDisplayPokemonInventory}
                     />
                   ) : poke.added ? (
-                    <>
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="flex flex-col justify-between col-start-1 row-span-3">
-                          <button
-                            className="btn h-full w-full border border-base-300 shadow-sm p-5"
-                            type="button"
-                            onClick={() => addNewPokemonAtTeamPosition(i)}
-                          >
-                            <figure className="h-full">
-                              <img
-                                src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.num}.png`}
-                                alt={poke.name}
-                              />
-                            </figure>
-                            <div className="break-words">{poke.name}</div>
-                          </button>
-                        </div>
-                        <div>
-                          {/* {createDropDown(i, "abilities")} */}
-                          <select
-                            onChange={(e) => handleAbilitySelect(e, i)}
-                            defaultValue={
-                              //if ability is selected keep it otherwise say "ability"
-                              newTeam[i].ability
-                                ? newTeam[i].ability
-                                : "Ability"
-                            }
-                            className="select select-bordered w-full max-w-xs"
-                          >
-                            <option disabled>Ability</option>
-                            {abilities.map((ability) => {
-                              return (
-                                <option
-                                  disabled={
-                                    remaining(ability, "ability") <= 0
-                                      ? true
-                                      : false
-                                  }
-                                  key={ability.name}
-                                  value={ability.name}
-                                >{`${ability.name}  (${remaining(
-                                  ability,
-                                  "ability"
-                                )})`}</option>
-                              );
-                            })}
-                          </select>
-                        </div>
-                        {/* sends current ID to be used as pokemonTeamPosition */}
-                        {createMoveDropDown(i)}
+                    <div key={uniqid()} className="grid grid-cols-2 gap-2">
+                      <div className="flex flex-col justify-between col-start-1 row-span-3">
+                        <button
+                          className="btn h-full w-full border border-base-300 shadow-sm p-5"
+                          type="button"
+                          onClick={() => addNewPokemonAtTeamPosition(i)}
+                        >
+                          <figure className="h-full">
+                            <img
+                              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.num}.png`}
+                              alt={poke.name}
+                            />
+                          </figure>
+                          <div className="break-words">{poke.name}</div>
+                        </button>
                       </div>
-                    </>
+                      <div>
+                        <select
+                          key={uniqid()}
+                          onChange={(e) => handleAbilitySelect(e, i)}
+                          defaultValue={
+                            //if ability is selected keep it otherwise say "ability"
+                            newTeam[i].ability ? newTeam[i].ability : "Ability"
+                          }
+                          className="select select-bordered w-full max-w-xs"
+                        >
+                          <option disabled>Ability</option>
+                          {abilities.map((ability) => {
+                            return (
+                              <option
+                                key={uniqid()}
+                                disabled={
+                                  remaining(ability, "ability") <= 0
+                                    ? true
+                                    : false
+                                }
+                                value={ability.name}
+                              >{`${ability.name}  (${remaining(
+                                ability,
+                                "ability"
+                              )})`}</option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      {/* sends current ID to be used as pokemonTeamPosition */}
+                      {createMoveDropDown(i)}
+                    </div>
                   ) : (
                     <button
+                      key={uniqid()}
                       onClick={() => addNewPokemonAtTeamPosition(i)}
                       type="button"
                       className="btn btn-lg btn-accent w-20 place-self-center"
