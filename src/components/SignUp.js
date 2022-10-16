@@ -51,6 +51,8 @@ export default function SignUp() {
         setError(error.message);
       })
       .finally(() => {
+        window.location.reload();
+
         setLoading(false);
       });
   }

@@ -15,10 +15,13 @@ const Nav = () => {
     logout()
       .then(() => {
         setNotification("Successfully logged out");
-        navigate("/login");
       })
       .catch((error) => {
         setNotification(error.message);
+      })
+      .finally(() => {
+        window.location.reload();
+        navigate("/login");
       });
   }
 

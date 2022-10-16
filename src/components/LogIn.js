@@ -19,6 +19,7 @@ export default function LogIn() {
     logIn(emailRef.current.value, passwordRef.current.value)
       .then((user) => {
         console.log("successful sign in");
+        window.location.reload();
       })
       .catch((error) => {
         setLoading(false);
