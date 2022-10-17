@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
-import { db } from "../firebase.js";
-import { useAuth } from "../contexts/AuthContext";
 import {
+  addDoc,
   collection,
   onSnapshot,
-  addDoc,
   serverTimestamp,
 } from "firebase/firestore";
+import React, { useContext, useEffect, useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { db } from "../firebase.js";
 
 const TeamContext = React.createContext();
 

@@ -1,6 +1,8 @@
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
+import AddTeam from "./components/AddTeam";
+import ChangePassword from "./components/ChangePassword";
 import ForgotPassword from "./components/ForgotPassword";
 import Home from "./components/Home";
 import Inventory from "./components/Inventory";
@@ -10,13 +12,11 @@ import PrivateRoute from "./components/PrivateRoute";
 import Profile from "./components/Profile";
 import SignUp from "./components/SignUp";
 import SubmitReplay from "./components/SubmitReplay";
-import ChangePassword from "./components/ChangePassword";
+import Teams from "./components/Teams";
 import { useAuth } from "./contexts/AuthContext";
 import { InventoryProvider } from "./contexts/InventoryContext";
 import { PokedexProvider } from "./contexts/PokedexContext";
 import { TeamsProvider } from "./contexts/TeamContext";
-import Teams from "./components/Teams";
-import AddTeam from "./components/AddTeam";
 
 function App() {
   const { currentUser } = useAuth();

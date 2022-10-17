@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import PokeCard from "./PokeCard";
-import uniqid from "uniqid";
 import * as _ from "lodash";
+import React, { useEffect, useState } from "react";
+import uniqid from "uniqid";
+import PokeCard from "./PokeCard";
 
 //display inventory for user to select a pokemon
 const DisplayPokemon = ({

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { CREDITS_PER_SCORE, WINNER_BONUS_CREDITS } from "../helpers/global";
 
 const SubmitReplay = ({ inventory, addToInventory }) => {

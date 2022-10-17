@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import DisplayPokemon from "./DisplayPokemon";
-import uniqid from "uniqid";
-import { useTeams } from "../contexts/TeamContext";
-import { useInventory } from "../contexts/InventoryContext";
-import { useNavigate } from "react-router-dom";
 import { cloneDeep, isEmpty } from "lodash";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import uniqid from "uniqid";
+import { useInventory } from "../contexts/InventoryContext";
+import { useTeams } from "../contexts/TeamContext";
+import DisplayPokemon from "./DisplayPokemon";
 
 const AddTeam = () => {
   const [newTeam, setNewTeam] = useState([{}, {}, {}, {}, {}, {}]);

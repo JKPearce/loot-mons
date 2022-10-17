@@ -1,9 +1,9 @@
+import * as _ from "lodash";
 import React, { useState } from "react";
-import uniqid from "uniqid";
-import { useTeams } from "../contexts/TeamContext";
 import { Link } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
-import * as _ from "lodash";
+import uniqid from "uniqid";
+import { useTeams } from "../contexts/TeamContext";
 
 export default function Teams() {
   const { teamList, teamsLoading } = useTeams();

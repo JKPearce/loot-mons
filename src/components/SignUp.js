@@ -1,9 +1,9 @@
 //created with typing "rfc"
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
-import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 import { NEW_USER_CREDIT_AMOUNT } from "../helpers/global";
 
 export default function SignUp() {

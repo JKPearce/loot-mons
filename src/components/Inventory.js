@@ -1,6 +1,6 @@
 import React from "react";
-import PokeCard from "./PokeCard";
 import { useInventory } from "../contexts/InventoryContext";
+import PokeCard from "./PokeCard";
 
 const Inventory = () => {
   const { pokemon, moves, abilities } = useInventory();

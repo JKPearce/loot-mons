@@ -1,8 +1,8 @@
+import { getAnalytics } from "firebase/analytics";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import { getAnalytics } from "firebase/analytics";
-import { getPerformance } from "firebase/performance";
 import { getFirestore } from "firebase/firestore";
+import { getPerformance } from "firebase/performance";
 
 const app = firebase.initializeApp({
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,

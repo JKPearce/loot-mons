@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
+import { getCLS, getFID, getLCP } from "web-vitals";
 import App from "./App";
 import { AuthProvider } from "./contexts/AuthContext";
-import { getLCP, getFID, getCLS } from "web-vitals";
 
 getCLS(console.log);
 getFID(console.log);

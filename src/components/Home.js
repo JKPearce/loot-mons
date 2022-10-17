@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { PRICE } from "../helpers/global";
 import PokeCard from "./PokeCard";
 // import { add, formatDistanceToNowStrict, parseJSON, isPast } from "date-fns";
-import { usePokedex } from "../contexts/PokedexContext";
 import { useInventory } from "../contexts/InventoryContext";
+import { usePokedex } from "../contexts/PokedexContext";
 
 const Home = () => {
   const { pokedex } = usePokedex();

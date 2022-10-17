@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
-import { db } from "../firebase.js";
-import { useAuth } from "../contexts/AuthContext";
 import {
   collection,
-  setDoc,
   doc,
   increment,
-  updateDoc,
   onSnapshot,
+  setDoc,
+  updateDoc,
 } from "firebase/firestore";
+import React, { useContext, useEffect, useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { db } from "../firebase.js";
 
 const InventoryContext = React.createContext();
 
