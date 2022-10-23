@@ -144,7 +144,7 @@ const AddTeam = () => {
       console.log(team);
       setNewTeam(team.pokemon);
     }
-    console.log(location);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
