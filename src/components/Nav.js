@@ -10,6 +10,37 @@ const Nav = () => {
   const [themeIcon, setThemeIcon] = useState("🌙");
   const [notification, setNotification] = useState();
   const { currentUser, logout } = useAuth();
+  const themes = [
+    "light",
+    "dark",
+    "cupcake",
+    "bumblebee",
+    "emerald",
+    "corporate",
+    "synthwave",
+    "retro",
+    "cyberpunk",
+    "valentine",
+    "halloween",
+    "garden",
+    "forest",
+    "aqua",
+    "lofi",
+    "pastel",
+    "fantasy",
+    "wireframe",
+    "black",
+    "luxury",
+    "dracula",
+    "cmyk",
+    "autumn",
+    "business",
+    "acid",
+    "lemonade",
+    "night",
+    "coffee",
+    "winter",
+  ];
 
   function handleLogout() {
     logout()
@@ -111,13 +142,24 @@ const Nav = () => {
               </div>
               <ul
                 tabIndex={0}
-                className="menu menu-compact dropdown-content mt-14 p-2 shadow bg-neutral text-neutral-content rounded-box w-52"
+                className="menu menu-compact dropdown-content mt-14 p-2 shadow bg-neutral text-neutral-content rounded-box w-52 gap-2"
               >
                 <li>
                   <Link to="/profile">Profile</Link>
                 </li>
                 <li>
                   <Link to="/change-password">Change Password</Link>
+                </li>
+                <li>
+                  <select data-choose-theme className="select select-primary">
+                    {themes.map((theme) => {
+                      return (
+                        <option value={theme} key={theme}>
+                          {theme}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </li>
                 <li>
                   <button className="btn btn-error" onClick={handleLogout}>
@@ -136,18 +178,6 @@ const Nav = () => {
               </Link>
             </div>
           )}
-
-          <button
-            onClick={(e) =>
-              e.currentTarget.classList.contains("ACTIVECLASS")
-                ? setThemeIcon(<BsSunFill />)
-                : setThemeIcon(<BsMoonFill />)
-            }
-            data-toggle-theme="winter,night"
-            data-act-class="ACTIVECLASS"
-          >
-            {themeIcon}
-          </button>
         </div>
       </div>
       {notification && (
