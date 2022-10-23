@@ -1,62 +1,102 @@
-import React, { useEffect, useState } from "react";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  increment,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import React, { useEffect, useRef, useState } from "react";
+import { db } from "../firebase";
 import { CREDITS_PER_SCORE, WINNER_BONUS_CREDITS } from "../helpers/global";
 
-const SubmitReplay = ({ inventory, addToInventory }) => {
-  const [replayLink, setReplayLink] = useState("");
+const SubmitReplay = () => {
+  const replayLink = useRef();
   const [replayData, setReplayData] = useState(null);
-  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [player1, setPlayer1] = useState({});
   const [player2, setPlayer2] = useState({});
   const [showBreakdown, setShowBreakdown] = useState(false);
-  const [nameError, setNameError] = useState(false);
+  const [replayExists, setReplayExists] = useState(false);
   const [forfeited, setForfeited] = useState(false);
 
   function handleSubmit(e) {
     e.preventDefault();
-    //validate data here to make sure its a pokemonshowdown replay link
     setReplayData(null);
+    setReplayExists(false);
     setLoading(true);
-    fetch(`${replayLink}.json`)
-      .then((response) => response.json())
-      .then((data) => {
-        setReplayData(data);
-        setLoading(false);
+    setShowBreakdown(false);
+
+    //get the game ID and URL by removing .json or adding .json
+    let url = "";
+    let gameID = "";
+
+    if (replayLink.current.value.endsWith(".json")) {
+      url = replayLink.current.value;
+      gameID = replayLink.current.value.slice(
+        replayLink.current.value.lastIndexOf("/"),
+        replayLink.current.value.indexOf(".json")
+      );
+    } else {
+      url = `${replayLink.current.value}.json`;
+      gameID = replayLink.current.value.slice(
+        replayLink.current.value.lastIndexOf("/") + 1
+      );
+    }
+
+    //check if replay link exists in DB
+    getDoc(doc(db, "replays", gameID))
+      .then((snap) => {
+        if (snap.exists()) {
+          setReplayExists(true);
+        } else {
+          fetch(`${url}`)
+            .then((response) => response.json())
+            .then((data) => {
+              setReplayData(data);
+            });
+        }
       })
-      .catch((error) => setLoading(false));
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   useEffect(() => {
     if (replayData) {
-      if (username === replayData.p1 || username === replayData.p2) {
-        setForfeited(() => {
-          const regex = /forfeited/gi;
-          const result = regex.test(replayData.log);
-          return result;
-        });
-        setPlayer1({
-          name: replayData.p1,
-          score: getScore("p2"), //has to be opposite player
-          winner: getWinner(replayData.p1),
-          team: getTeam("p1"),
-        });
-        setPlayer2({
-          name: replayData.p2,
-          score: getScore("p1"), //has to be opposite player
-          winner: getWinner(replayData.p2),
-          team: getTeam("p2"),
-        });
-        setNameError(false);
-        //The calcReward was running before it would check for forfeit so added a 3 second "Loading" delay
-        setLoading(true);
-        const timer = setTimeout(() => {
-          calcReward();
-          setLoading(false);
-        }, 3000);
-        return () => clearInterval(timer);
-      } else {
-        setNameError(true);
-      }
+      setForfeited(() => {
+        const regex = /forfeited/gi;
+        const result = regex.test(replayData.log);
+        return result;
+      });
+      setPlayer1({
+        name: replayData.p1,
+        score: getScore("p2"), //has to be opposite player
+        winner: getWinner(replayData.p1),
+        team: getTeam("p1"),
+      });
+      setPlayer2({
+        name: replayData.p2,
+        score: getScore("p1"), //has to be opposite player
+        winner: getWinner(replayData.p2),
+        team: getTeam("p2"),
+      });
+
+      //The calcReward was running before it would check for forfeit so added a 3 second "Loading" delay
+      setLoading(true);
+      const timer = setTimeout(() => {
+        calcReward();
+        setLoading(false);
+      }, 3000);
+      return () => clearInterval(timer);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,31 +105,52 @@ const SubmitReplay = ({ inventory, addToInventory }) => {
   useEffect(() => {
     if (player1.totalReward > 0 || player2.totalReward > 0) {
       setShowBreakdown(true);
-      if (player1.name === username) {
-        addToInventory((prevState) => {
-          return {
-            ...prevState,
-            credits: prevState.credits + player1.totalReward,
-          };
+
+      //save all replay details to database
+      setDoc(doc(db, "replays", replayData.id), {
+        ...replayData,
+        submitted: serverTimestamp(),
+        player1: player1,
+        player2: player2,
+        url: replayLink.current.value,
+      });
+
+      //award credits to players on lootmons
+      const player1Query = query(
+        collection(db, "users"),
+        where("username", "==", `${player1.name}`)
+      );
+
+      getDocs(player1Query).then((snapshot) => {
+        snapshot.forEach((player) => {
+          console.log(player.id, " => ", player.data());
+          updateDoc(doc(db, `users/${player.id}`), {
+            credits: increment(player1.totalReward),
+            wins: player1.winner ? increment(1) : increment(0),
+            games_played: increment(1),
+          });
         });
-      }
-      if (player2.name === username) {
-        addToInventory((prevState) => {
-          return {
-            ...prevState,
-            credits: prevState.credits + player2.totalReward,
-          };
+      });
+
+      const player2Query = query(
+        collection(db, "users"),
+        where("username", "==", `${player2.name}`)
+      );
+
+      getDocs(player2Query).then((snapshot) => {
+        snapshot.forEach((player) => {
+          console.log(player.id, " => ", player.data());
+          updateDoc(doc(db, `users/${player.id}`), {
+            credits: increment(player2.totalReward),
+            wins: player2.winner ? increment(1) : increment(0),
+            games_played: increment(1),
+          });
         });
-      }
+      });
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player1.totalReward, player2.totalReward]);
-
-  useEffect(() => {
-    console.log("adding credits", inventory.credits);
-    localStorage.setItem("inventory", JSON.stringify(inventory));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inventory.credits]);
 
   function calcReward() {
     setPlayer1((prevState) => {
@@ -150,35 +211,23 @@ const SubmitReplay = ({ inventory, addToInventory }) => {
         <input
           type="text"
           required
-          value={replayLink}
-          onChange={(e) => setReplayLink(e.target.value)}
+          pattern="(?:https?:\/\/)?(?:replay\.)?pokemonshowdown.com\/(.*)"
+          title="Pokemon showdown replay link e.g: https://replay.pokemonshowdown.com/sports-gen8nationaldexdraft-667088"
+          ref={replayLink}
           placeholder="Replay Link e.g. https://replay.pokemonshowdown.com/sports-gen8nationaldexdraft-667088"
-          className="input input-bordered w-full"
-        />
-        <input
-          type="text"
-          required
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Showdown Username e.g. BionicSoup"
           className="input input-bordered w-full"
         />
         <button className="btn" type="submit">
           Submit
         </button>
       </form>
-      <p>LootCreds: {inventory.credits}</p>
       {loading && <progress className="progress w-full"></progress>}
-      {nameError && (
-        <div className="font-bold text-4xl bg-error p-10">
-          Username did not match any name in the replay file
-        </div>
-      )}
       {forfeited && !showBreakdown && (
         <p>Game was forfeited and no points were awarded</p>
       )}
+      {replayExists && <p>This replay has already been submitted</p>}
       {showBreakdown && (
-        <div className="card card-bordered bg-base-100 shadow-lg p-5 flex flex-col gap-5 content-center justify-center text-center">
+        <div className="card card-bordered bg-base-100 text-base-content shadow-lg p-5 flex flex-col gap-5 content-center justify-center text-center">
           <div className="">
             <p className="text-xl font-bold">How LootCreds are rewarded</p>
             <p>Credits per Pokemon Elimination: {CREDITS_PER_SCORE}</p>

@@ -43,6 +43,7 @@ export default function SignUp() {
               created: serverTimestamp(),
             });
             navigate("/profile");
+            window.location.reload();
           });
       })
       .catch((error) => {
@@ -51,8 +52,6 @@ export default function SignUp() {
         setError(error.message);
       })
       .finally(() => {
-        window.location.reload();
-
         setLoading(false);
       });
   }
