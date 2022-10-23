@@ -23,7 +23,7 @@ const AddTeam = () => {
     e.preventDefault();
     setLoading(true);
 
-    if (location.state.team) {
+    if (location.state) {
       updateTeam(newTeam, teamNameRef.current.value, location.state.team.id)
         .then(() => {
           console.log("updating team");
@@ -144,6 +144,7 @@ const AddTeam = () => {
       console.log(team);
       setNewTeam(team.pokemon);
     }
+    console.log(location);
   }, []);
 
   return (
@@ -164,7 +165,7 @@ const AddTeam = () => {
                 ref={teamNameRef}
                 className="input input-bordered"
                 defaultValue={
-                  location.state.team
+                  location.state
                     ? location.state.team.team_name
                     : `Team ${teamList.length + 1}`
                 }
