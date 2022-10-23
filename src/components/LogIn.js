@@ -19,16 +19,14 @@ export default function LogIn() {
     logIn(emailRef.current.value, passwordRef.current.value)
       .then((user) => {
         console.log("successful sign in");
+        setLoading(false);
+        navigate("/profile");
         window.location.reload();
       })
       .catch((error) => {
         setLoading(false);
         console.log({ error });
         setError(error.message);
-      })
-      .finally(() => {
-        setLoading(false);
-        navigate("/");
       });
   }
 
