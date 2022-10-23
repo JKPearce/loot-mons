@@ -8,6 +8,7 @@ import { useTeams } from "../contexts/TeamContext";
 export default function Teams() {
   const { teamList, teamsLoading, deleteTeam } = useTeams();
   const [copyText, setCopyText] = useState("Copy");
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   function exportTeam(team) {
     //export team to text format able to be used in pokemonshowdown import
@@ -72,12 +73,29 @@ export default function Teams() {
                     >
                       Edit
                     </Link>
-                    <button
-                      className="btn btn-ghost btn-error text-error"
-                      onClick={() => deleteTeam(team)}
-                    >
-                      Delete
-                    </button>
+                    {confirmDelete === i ? (
+                      <>
+                        <button
+                          className="btn btn-error "
+                          onClick={() => deleteTeam(team)}
+                        >
+                          YES
+                        </button>
+                        <button
+                          className="btn btn-error "
+                          onClick={() => setConfirmDelete(false)}
+                        >
+                          NO
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        className="btn btn-error "
+                        onClick={() => setConfirmDelete(i)}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
                 </div>
                 <div className="grid grid-cols-3 sm:grid-cols-6 p-2 gap-2">
