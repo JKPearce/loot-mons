@@ -6,7 +6,7 @@ import uniqid from "uniqid";
 import { useTeams } from "../contexts/TeamContext";
 
 export default function Teams() {
-  const { teamList, teamsLoading } = useTeams();
+  const { teamList, teamsLoading, deleteTeam } = useTeams();
   const [copyText, setCopyText] = useState("Copy");
 
   function exportTeam(team) {
@@ -64,6 +64,19 @@ export default function Teams() {
                       data-tip={copyText}
                     >
                       Export
+                    </button>
+                    <Link
+                      className="btn btn-ghost"
+                      to="/add-team"
+                      state={{ team: team }}
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      className="btn btn-ghost btn-error text-error"
+                      onClick={() => deleteTeam(team)}
+                    >
+                      Delete
                     </button>
                   </div>
                 </div>

@@ -1,14 +1,15 @@
 import { cloneDeep, isEmpty } from "lodash";
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import uniqid from "uniqid";
 import { useInventory } from "../contexts/InventoryContext";
 import { useTeams } from "../contexts/TeamContext";
 import DisplayPokemon from "./DisplayPokemon";
 
 const AddTeam = () => {
+  const location = useLocation();
   const [newTeam, setNewTeam] = useState([{}, {}, {}, {}, {}, {}]);
-  const { addTeam, teamList } = useTeams();
+  const { addTeam, teamList, updateTeam } = useTeams();
   const { moves, pokemon, abilities, pokemonLoading } = useInventory();
   const navigate = useNavigate();
   const [localPokemon, setLocalPokemon] = useState(cloneDeep(pokemon));
@@ -21,17 +22,32 @@ const AddTeam = () => {
   function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
-    addTeam(newTeam, teamNameRef.current.value)
-      .then(() => {
-        console.log("Adding team: ", newTeam);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
-        navigate("/teams");
-      });
+
+    if (location.state.team) {
+      updateTeam(newTeam, teamNameRef.current.value, location.state.team.id)
+        .then(() => {
+          console.log("updating team");
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          navigate("/teams");
+        });
+    } else {
+      addTeam(newTeam, teamNameRef.current.value)
+        .then(() => {
+          console.log("Adding team: ", newTeam);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          navigate("/teams");
+        });
+    }
   }
 
   function handleMoveSelected(e, moveNumber, teamPosition) {
@@ -122,6 +138,14 @@ const AddTeam = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pokemon]);
 
+  useEffect(() => {
+    if (location.state) {
+      const { team } = location.state;
+      console.log(team);
+      setNewTeam(team.pokemon);
+    }
+  }, []);
+
   return (
     <div className="">
       {pokemonLoading ? (
@@ -139,7 +163,11 @@ const AddTeam = () => {
                 type="text"
                 ref={teamNameRef}
                 className="input input-bordered"
-                defaultValue={`Team ${teamList.length + 1}`}
+                defaultValue={
+                  location.state.team
+                    ? location.state.team.team_name
+                    : `Team ${teamList.length + 1}`
+                }
               ></input>
             </div>
             <div className="grid place-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 place-content-center">
