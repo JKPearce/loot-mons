@@ -41,9 +41,10 @@ export default function SignUp() {
               games_played: 0,
               new_user: true,
               created: serverTimestamp(),
+            }).then(() => {
+              navigate("/profile");
+              window.location.reload();
             });
-            navigate("/profile");
-            window.location.reload();
           });
       })
       .catch((error) => {
