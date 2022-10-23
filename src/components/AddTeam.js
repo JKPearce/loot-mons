@@ -38,7 +38,7 @@ const AddTeam = () => {
     } else {
       addTeam(newTeam, teamNameRef.current.value)
         .then(() => {
-          console.log("Adding team: ", newTeam);
+          console.log("Adding team");
         })
         .catch((error) => {
           console.log(error);
