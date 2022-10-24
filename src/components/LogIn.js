@@ -1,6 +1,6 @@
 //created with typing "rfc"
 import React, { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function LogIn() {
@@ -9,7 +9,6 @@ export default function LogIn() {
   const { logIn } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -20,7 +19,7 @@ export default function LogIn() {
       .then((user) => {
         console.log("successful sign in");
         setLoading(false);
-        navigate("/profile");
+        redirect("/");
         window.location.reload();
       })
       .catch((error) => {
