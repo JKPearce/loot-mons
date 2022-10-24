@@ -1,11 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import { themeChange } from "theme-change";
 import { useAuth } from "../contexts/AuthContext";
 
 const Nav = () => {
-  const navigate = useNavigate();
   const [notification, setNotification] = useState();
   const { currentUser, logout } = useAuth();
   const themes = [
@@ -50,7 +49,7 @@ const Nav = () => {
       })
       .finally(() => {
         window.location.reload();
-        navigate("/login");
+        redirect("/login");
       });
   }
 

@@ -150,8 +150,18 @@ const SubmitReplay = () => {
         snapshot.forEach((player) => {
           updateDoc(doc(db, `users/${player.id}`), {
             credits: increment(player1.totalReward),
+            lifetime_credits: increment(player1.totalReward),
             wins: player1.winner ? increment(1) : increment(0),
             games_played: increment(1),
+            notifications: [
+              {
+                message: `${currentUser.displayName} has submitted a replay and you have been awarded ${player1.totalReward} LootCreds!`,
+                read: false,
+                time: serverTimestamp(),
+                game_id: replayData.id,
+              },
+              ...player.notifications,
+            ],
           });
         });
       });
@@ -165,8 +175,18 @@ const SubmitReplay = () => {
         snapshot.forEach((player) => {
           updateDoc(doc(db, `users/${player.id}`), {
             credits: increment(player2.totalReward),
+            lifetime_credits: increment(player2.totalReward),
             wins: player2.winner ? increment(1) : increment(0),
             games_played: increment(1),
+            notifications: [
+              {
+                message: `${currentUser.displayName} has submitted a replay and you have been awarded ${player2.totalReward} LootCreds!`,
+                read: false,
+                time: serverTimestamp(),
+                game_id: replayData.id,
+              },
+              ...player.notifications,
+            ],
           });
         });
       });

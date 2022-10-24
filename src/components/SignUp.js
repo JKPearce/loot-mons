@@ -1,7 +1,7 @@
 //created with typing "rfc"
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import React, { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
 import { NEW_USER_CREDIT_AMOUNT } from "../helpers/global";
@@ -14,7 +14,6 @@ export default function SignUp() {
   const { signUp } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -37,13 +36,12 @@ export default function SignUp() {
               uid: cred.user.uid,
               username: cred.user.displayName,
               credits: NEW_USER_CREDIT_AMOUNT,
+              lifetime_credits: NEW_USER_CREDIT_AMOUNT,
               wins: 0,
               games_played: 0,
               new_user: true,
+              notifications: [],
               created: serverTimestamp(),
-            }).then(() => {
-              navigate("/profile");
-              window.location.reload();
             });
           });
       })
@@ -54,6 +52,7 @@ export default function SignUp() {
       })
       .finally(() => {
         setLoading(false);
+        redirect("/");
       });
   }
 
