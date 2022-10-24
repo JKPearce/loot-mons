@@ -4,6 +4,7 @@ import {
   getDoc,
   getDocs,
   increment,
+  onSnapshot,
   query,
   serverTimestamp,
   setDoc,
@@ -11,6 +12,7 @@ import {
   where,
 } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
 import { CREDITS_PER_SCORE, WINNER_BONUS_CREDITS } from "../helpers/global";
 
@@ -23,6 +25,25 @@ const SubmitReplay = () => {
   const [showBreakdown, setShowBreakdown] = useState(false);
   const [replayExists, setReplayExists] = useState(false);
   const [forfeited, setForfeited] = useState(false);
+  const [replayList, setReplayList] = useState();
+  const [replayListLoading, setReplayListLoading] = useState(true);
+  const { currentUser } = useAuth();
+
+  //on mount get all the submitted links and display them in a list
+  useEffect(() => {
+    setReplayListLoading(true);
+    const unsubscribe = onSnapshot(collection(db, "replays"), (snapshot) => {
+      const replayArray = [];
+      snapshot.docs.forEach((doc) => {
+        replayArray.push({ ...doc.data() });
+      });
+      setReplayList(replayArray);
+      setReplayListLoading(false);
+    });
+
+    return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -70,6 +91,7 @@ const SubmitReplay = () => {
       });
   }
 
+  //when the replayData gets loaded in from the fetch request calculate scores
   useEffect(() => {
     if (replayData) {
       setForfeited(() => {
@@ -102,6 +124,8 @@ const SubmitReplay = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [replayData]);
 
+  //when the reward gets calculated, find the players accounts with the matching name in db
+  //and award them the total reward
   useEffect(() => {
     if (player1.totalReward > 0 || player2.totalReward > 0) {
       setShowBreakdown(true);
@@ -113,6 +137,7 @@ const SubmitReplay = () => {
         player1: player1,
         player2: player2,
         url: replayLink.current.value,
+        submitted_by: currentUser.displayName,
       });
 
       //award credits to players on lootmons
@@ -123,7 +148,6 @@ const SubmitReplay = () => {
 
       getDocs(player1Query).then((snapshot) => {
         snapshot.forEach((player) => {
-          console.log(player.id, " => ", player.data());
           updateDoc(doc(db, `users/${player.id}`), {
             credits: increment(player1.totalReward),
             wins: player1.winner ? increment(1) : increment(0),
@@ -139,7 +163,6 @@ const SubmitReplay = () => {
 
       getDocs(player2Query).then((snapshot) => {
         snapshot.forEach((player) => {
-          console.log(player.id, " => ", player.data());
           updateDoc(doc(db, `users/${player.id}`), {
             credits: increment(player2.totalReward),
             wins: player2.winner ? increment(1) : increment(0),
@@ -221,6 +244,60 @@ const SubmitReplay = () => {
           Submit
         </button>
       </form>
+      <div className="card card-bordered bg-base-100 text-base-content shadow-lg p-5 w-full max-h-80 overflow-y-auto">
+        {replayListLoading ? (
+          ("Replay List loading",
+          (<progress className="progress w-full"></progress>))
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="table table-compact w-full">
+              <thead>
+                <tr className="sticky top-0">
+                  <th> </th>
+                  <th>Link</th>
+                  <th>Winner</th>
+                  <th>Player 1</th>
+                  <th>Player 1 Total Reward</th>
+                  <th>Player 2</th>
+                  <th>Player 2 Total Reward</th>
+                  <th>Submitted on</th>
+                  <th>Submitted by</th>
+                </tr>
+              </thead>
+              <tbody>
+                {replayList &&
+                  replayList.map((replay, i) => {
+                    return (
+                      <tr key={replay.id}>
+                        <td className="font-bold">{i}</td>
+                        <td>
+                          <a className="link" href={replay.url}>
+                            {replay.id}
+                          </a>
+                        </td>
+                        <td>
+                          {replay.player1.winner
+                            ? replay.player1.name
+                            : replay.player2.name}
+                        </td>
+                        <td>{replay.player1.name}</td>
+                        <td>{replay.player1.totalReward}</td>
+                        <td>{replay.player2.name}</td>
+                        <td>{replay.player2.totalReward}</td>
+                        <td>
+                          {replay.submitted
+                            ? replay.submitted.toDate().toDateString()
+                            : "Loading time"}
+                        </td>
+                        <td>{replay.submitted_by}</td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
       {loading && <progress className="progress w-full"></progress>}
       {forfeited && !showBreakdown && (
         <p>Game was forfeited and no points were awarded</p>
