@@ -144,55 +144,12 @@ const SubmitReplay = () => {
       //award credits to players on lootmons
       updatePlayerProfile(player1);
       updatePlayerProfile(player2);
-      // const player1Query = query(
-      //   collection(db, "users"),
-      //   where("username", "==", `${player1.name}`)
-      // );
-
-      // getDocs(player1Query).then((snapshot) => {
-      //   snapshot.forEach((player) => {
-      //     console.log(player.data().notifications);
-      //     updateDoc(doc(db, `users/${player.id}`), {
-      //       credits: increment(player1.totalReward),
-      //       lifetime_credits: increment(player1.totalReward),
-      //       wins: player1.winner ? increment(1) : increment(0),
-      //       games_played: increment(1),
-      //     });
-      //     addDoc(collection(db, `users/${player.id}/notifications`), {
-      //       message: `${currentUser.displayName} has submitted a replay and you have been awarded ${player1.totalReward} LootCreds!`,
-      //       read: false,
-      //       time: serverTimestamp(),
-      //       game_id: replayData.id,
-      //     });
-      //   });
-      // });
-
-      // const player2Query = query(
-      //   collection(db, "users"),
-      //   where("username", "==", `${player2.name}`)
-      // );
-
-      // getDocs(player2Query).then((snapshot) => {
-      //   snapshot.forEach((player) => {
-      //     updateDoc(doc(db, `users/${player.id}`), {
-      //       credits: increment(player2.totalReward),
-      //       lifetime_credits: increment(player2.totalReward),
-      //       wins: player2.winner ? increment(1) : increment(0),
-      //       games_played: increment(1),
-      //     });
-      //     addDoc(collection(db, `users/${player.id}/notifications`), {
-      //       message: `${currentUser.displayName} has submitted a replay and you have been awarded ${player2.totalReward} LootCreds!`,
-      //       read: false,
-      //       time: serverTimestamp(),
-      //       game_id: replayData.id,
-      //     });
-      //   });
-      // });
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player1.totalReward, player2.totalReward]);
 
+  //find the user profile with matching username and add credits and notification
   function updatePlayerProfile(p) {
     const playerQuery = query(
       collection(db, "users"),
@@ -207,12 +164,18 @@ const SubmitReplay = () => {
           wins: p.winner ? increment(1) : increment(0),
           games_played: increment(1),
         });
+
         addDoc(collection(db, `users/${playerDocument.id}/notifications`), {
           message: `${currentUser.displayName} has submitted a replay and you have been awarded ${p.totalReward} LootCreds!`,
           read: false,
           time: serverTimestamp(),
           game_id: replayData.id,
           reward: p.totalReward,
+        }).then((newDoc) => {
+          //this adds the ID to the object also so i can target the notification and toggle read
+          updateDoc(newDoc, {
+            id: newDoc.id,
+          });
         });
       });
     });
