@@ -42,6 +42,10 @@ export default function SignUp() {
               new_user: true,
               notifications: [],
               created: serverTimestamp(),
+            }).then(() => {
+              redirect("/");
+              setLoading(false);
+              window.location.reload();
             });
           });
       })
@@ -49,10 +53,6 @@ export default function SignUp() {
         setLoading(false);
         console.log({ error });
         setError(error.message);
-      })
-      .finally(() => {
-        setLoading(false);
-        redirect("/");
       });
   }
 
