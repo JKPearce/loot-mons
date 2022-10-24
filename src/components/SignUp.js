@@ -26,21 +26,20 @@ export default function SignUp() {
     setLoading(true);
 
     signUp(emailRef.current.value, passwordRef.current.value)
-      .then((cred) => {
-        cred.user
+      .then((credential) => {
+        credential.user
           .updateProfile({
             displayName: displayNameRef.current.value,
           })
           .then(() => {
-            setDoc(doc(db, "users", cred.user.uid), {
-              uid: cred.user.uid,
-              username: cred.user.displayName,
+            setDoc(doc(db, "users", credential.user.uid), {
+              uid: credential.user.uid,
+              username: credential.user.displayName,
               credits: NEW_USER_CREDIT_AMOUNT,
               lifetime_credits: NEW_USER_CREDIT_AMOUNT,
               wins: 0,
               games_played: 0,
               new_user: true,
-              notifications: [],
               created: serverTimestamp(),
             }).then(() => {
               redirect("/");
