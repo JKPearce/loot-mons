@@ -1,6 +1,7 @@
 import firebase from "firebase/compat/app";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
-import { auth } from "../firebase.js";
+import { auth, db } from "../firebase.js";
 
 const AuthContext = React.createContext();
 
@@ -44,6 +45,11 @@ export function AuthProvider({ children }) {
     return currentUser.reauthenticateWithCredential(cred);
   }
 
+  function checkUsername(username) {
+    const q = query(collection(db, `users`), where("username", "==", username));
+    return getDocs(q);
+  }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
@@ -62,6 +68,7 @@ export function AuthProvider({ children }) {
     updateEmail,
     updatePassword,
     reauthenticate,
+    checkUsername,
   };
 
   return (

@@ -11,7 +11,7 @@ export default function SignUp() {
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
   const displayNameRef = useRef();
-  const { signUp } = useAuth();
+  const { signUp, checkUsername } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -25,34 +25,41 @@ export default function SignUp() {
     setError("");
     setLoading(true);
 
-    signUp(emailRef.current.value, passwordRef.current.value)
-      .then((credential) => {
-        credential.user
-          .updateProfile({
-            displayName: displayNameRef.current.value,
+    checkUsername(displayNameRef.current.value).then((snap) => {
+      if (snap.empty) {
+        signUp(emailRef.current.value, passwordRef.current.value)
+          .then((credential) => {
+            credential.user
+              .updateProfile({
+                displayName: displayNameRef.current.value,
+              })
+              .then(() => {
+                setDoc(doc(db, "users", credential.user.uid), {
+                  uid: credential.user.uid,
+                  username: credential.user.displayName,
+                  credits: NEW_USER_CREDIT_AMOUNT,
+                  lifetime_credits: NEW_USER_CREDIT_AMOUNT,
+                  wins: 0,
+                  games_played: 0,
+                  new_user: true,
+                  created: serverTimestamp(),
+                }).then(() => {
+                  redirect("/");
+                  setLoading(false);
+                  window.location.reload();
+                });
+              });
           })
-          .then(() => {
-            setDoc(doc(db, "users", credential.user.uid), {
-              uid: credential.user.uid,
-              username: credential.user.displayName,
-              credits: NEW_USER_CREDIT_AMOUNT,
-              lifetime_credits: NEW_USER_CREDIT_AMOUNT,
-              wins: 0,
-              games_played: 0,
-              new_user: true,
-              created: serverTimestamp(),
-            }).then(() => {
-              redirect("/");
-              setLoading(false);
-              window.location.reload();
-            });
+          .catch((error) => {
+            setLoading(false);
+            console.log({ error });
+            setError(error.message);
           });
-      })
-      .catch((error) => {
+      } else {
         setLoading(false);
-        console.log({ error });
-        setError(error.message);
-      });
+        setError("Username already exists");
+      }
+    });
   }
 
   return (

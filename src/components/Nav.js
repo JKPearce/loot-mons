@@ -12,11 +12,13 @@ import React, { useEffect, useState } from "react";
 import { Link, redirect } from "react-router-dom";
 import { themeChange } from "theme-change";
 import { useAuth } from "../contexts/AuthContext";
+import { useInventory } from "../contexts/InventoryContext";
 import { db } from "../firebase";
 
 const Nav = () => {
   const [logoutNotification, setLogoutNotification] = useState();
   const [notificationList, setNotificationList] = useState([]);
+  const { userProfile, loadingProfile } = useInventory();
   const { currentUser, logout } = useAuth();
   const themes = [
     "light",
@@ -244,7 +246,7 @@ const Nav = () => {
               <div className="dropdown dropdown-end dropdown-content flex flex-row">
                 <div className="flex btn btn-ghost gap-3">
                   <button className=" normal-case">
-                    {currentUser.displayName ? currentUser.displayName : ""}
+                    {loadingProfile ? "Loading.." : userProfile.username}
                   </button>
                 </div>
                 <ul

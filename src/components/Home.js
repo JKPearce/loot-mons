@@ -15,7 +15,7 @@ const Home = () => {
     addMove,
     addAbility,
     removeCredits,
-    loadingCredits,
+    loadingProfile,
   } = useInventory();
   const [creditError, setCreditError] = useState(false);
   // const [timeLeft, setTimeLeft] = useState(null);
@@ -97,7 +97,7 @@ const Home = () => {
           </div>
         )}
       </div>
-      {loadingCredits ? (
+      {loadingProfile ? (
         "Loading..."
       ) : (
         <div className="flex gap-4 flex-col">
@@ -128,7 +128,7 @@ const Home = () => {
         </div>
       )}
       <div className="absolute top-2 right-10">
-        LootCreds: {loadingCredits ? "Loading..." : credits}
+        LootCreds: {loadingProfile ? "Loading..." : credits}
       </div>
     </div>
   );

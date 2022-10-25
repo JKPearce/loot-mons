@@ -1,13 +1,15 @@
+import { doc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useInventory } from "../contexts/InventoryContext";
+import { db } from "../firebase";
 
 //this page will display user profile details so they can edit their showdown name / change password
 //it will also be the place a user comes to look at lootmon stats like,
 //total pokemon in inv, total wins, highest amount of credits owned, total credits acquired, total credits spent
 export default function Profile() {
   const [editing, setEditing] = useState(false);
-  const { currentUser, updateEmail, reauthenticate } = useAuth();
+  const { currentUser, updateEmail, reauthenticate, checkUsername } = useAuth();
   const {
     userProfile,
     loadingCredits,
@@ -23,43 +25,61 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState();
 
-  function handleSave(e) {
+  async function handleSave(e) {
     e.preventDefault();
     const promises = [];
+    let usernameError = false;
 
     if (!passwordRef.current.value) {
       return setError("Please enter your password");
     }
 
     if (emailRef.current.value !== currentUser.email) {
-      promises.push(reauthenticate(passwordRef.current.value));
-      promises.push(updateEmail(emailRef.current.value));
-    }
-
-    //check if they changed any inputs and update if true
-    if (usernameRef.current.value !== currentUser.displayName) {
       promises.push(
-        currentUser.updateProfile({
-          displayName: usernameRef.current.value,
+        reauthenticate(passwordRef.current.value).then(() => {
+          updateEmail(emailRef.current.value);
         })
       );
     }
 
     setLoading(true);
-    setError("");
-    Promise.all(promises)
-      .then(() => {
-        setMessage("Successfully updated profile");
-        console.log("Saved");
-      })
-      .catch((error) => {
-        console.log(error);
-        setError(error.message);
-      })
-      .finally(() => {
-        setLoading(false);
-        setEditing(!editing);
+    if (usernameRef.current.value !== currentUser.displayName) {
+      await checkUsername(usernameRef.current.value).then((snap) => {
+        if (snap.empty) {
+          promises.push(
+            currentUser.updateProfile({
+              displayName: usernameRef.current.value,
+            })
+          );
+          promises.push(
+            updateDoc(doc(db, `users/${currentUser.uid}`), {
+              username: usernameRef.current.value,
+            })
+          );
+        } else {
+          usernameError = true;
+          setError("Username Already exists");
+          setLoading(false);
+        }
       });
+    }
+
+    if (!usernameError) {
+      setError("");
+      Promise.all(promises)
+        .then(() => {
+          setMessage("Successfully updated profile");
+          console.log("Saved");
+        })
+        .catch((error) => {
+          console.log(error);
+          setError(error.message);
+        })
+        .finally(() => {
+          setLoading(false);
+          setEditing(!editing);
+        });
+    }
   }
 
   useEffect(() => {
@@ -119,6 +139,46 @@ export default function Profile() {
                   ></input>
                 </td>
               </tr>
+              {editing ? (
+                <tr>
+                  <td>
+                    <button
+                      type="button"
+                      className="btn btn-sm"
+                      onClick={() => setEditing(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="btn btn-success btn-sm">
+                      Save
+                    </button>
+                  </td>
+
+                  <td className="indicator  w-full">
+                    <span className="indicator-item badge badge-error badge-sm">
+                      *
+                    </span>
+                    <input
+                      type="password"
+                      placeholder="Confirm Password"
+                      required
+                      className={`input input-bordered  w-full ${
+                        error ? "input-error" : ""
+                      }`}
+                      ref={passwordRef}
+                    />
+                  </td>
+                </tr>
+              ) : (
+                <tr>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => setEditing(!editing)}
+                  >
+                    Edit profile
+                  </button>
+                </tr>
+              )}
             </tbody>
           </table>
           {error && (
@@ -135,36 +195,7 @@ export default function Profile() {
               </div>
             </div>
           )}
-          {loading ? (
-            <progress className="progress w-full"></progress>
-          ) : editing ? (
-            <div className="flex justify-between ">
-              <button type="submit" className="btn btn-primary">
-                Save
-              </button>
-              <div className="indicator">
-                <span className="indicator-item badge badge-error badge-sm">
-                  *
-                </span>
-                <input
-                  type="password"
-                  placeholder="Confirm Password"
-                  required
-                  className={`input input-bordered ${
-                    error ? "input-error" : ""
-                  }`}
-                  ref={passwordRef}
-                />
-              </div>
-            </div>
-          ) : (
-            <button
-              className="btn btn-primary"
-              onClick={() => setEditing(!editing)}
-            >
-              Edit profile
-            </button>
-          )}
+          {loading && <progress className="progress w-full"></progress>}
         </form>
         <div className="flex flex-col w-full p-5 card card-bordered bg-base-100 shadow-xl">
           {!loadingCredits ? (
