@@ -27,6 +27,7 @@ export function InventoryProvider({ children }) {
   const [loadingMoves, setLoadingMoves] = useState(true);
   const [loadingAbilities, setLoadingAbilities] = useState(true);
   const [loadingCredits, setLoadingCredits] = useState(true);
+  const [userProfile, setUserProfile] = useState();
 
   function addPokemon(newPokemon) {
     //set the newest item so it can be displayed
@@ -145,6 +146,7 @@ export function InventoryProvider({ children }) {
       });
 
       const unsubscribeCredits = onSnapshot(userRef, (snapshot) => {
+        setUserProfile(snapshot.data());
         setCredits(snapshot.data().credits);
         setLoadingCredits(false);
       });
@@ -170,6 +172,7 @@ export function InventoryProvider({ children }) {
     loadingMoves,
     loadingAbilities,
     loadingCredits,
+    userProfile,
     addPokemon,
     addMove,
     addAbility,
