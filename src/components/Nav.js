@@ -1,4 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
+import { formatDistanceToNow } from "date-fns";
 import {
   collection,
   doc,
@@ -76,8 +77,13 @@ const Nav = () => {
         snapshot.docs.forEach((doc) => {
           notificationArray.push({ ...doc.data() });
         });
-        setNotificationList(notificationArray);
-        console.log(notificationArray);
+        //makes the most recent notification at the top
+        setNotificationList(notificationArray.reverse());
+        if (notificationArray.length > 0) {
+          document.title = `(${notificationArray.length}) Loot-Mons`;
+        } else {
+          document.title = "Loot-Mons";
+        }
       });
 
       return () => {
@@ -97,8 +103,8 @@ const Nav = () => {
     }
   }, [logoutNotification]);
 
+  //sets all notifications in the notification dropdown to read
   function handleBlur(e) {
-    console.log(e);
     if (notificationList.length < 0) return;
     notificationList.forEach((notification) => {
       updateDoc(
@@ -193,16 +199,36 @@ const Nav = () => {
                       d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                     />
                   </svg>
+
                   {notificationList.length > 0 ? (
                     <>
                       <span className="badge badge-xs badge-primary indicator-item">
                         {notificationList.length}
                       </span>
-                      <ul className="dropdown-content mt-10 p-2 shadow bg-neutral text-neutral-content rounded-box w-52 gap-2 normal-case">
+                      <ul className="dropdown-content mt-10 p-2 shadow bg-neutral w-52 gap-2 normal-case">
                         {notificationList.map((notification) => {
                           return (
-                            <li key={notification.id}>
-                              <div>{notification.message}</div>
+                            <li
+                              className="p-5 border-b border-b-base-content text-left"
+                              key={notification.id}
+                            >
+                              <h3 className="font-bold text-xl my-2">
+                                {notification.reward + " LootCreds!"}
+                              </h3>
+                              <div className="text-2xs">
+                                <p className="my-2">{notification.message}</p>
+                                {/* the check here is because firebase takes a sec to get the date */}
+                                {notification.time ? (
+                                  <span className=" text-info ">
+                                    {formatDistanceToNow(
+                                      notification.time.toDate(),
+                                      { addSuffix: true }
+                                    )}
+                                  </span>
+                                ) : (
+                                  ""
+                                )}
+                              </div>
                             </li>
                           );
                         })}
@@ -231,17 +257,17 @@ const Nav = () => {
                   <li>
                     <Link to="/change-password">Change Password</Link>
                   </li>
-                  <li>
-                    <select data-choose-theme className="select select-primary">
-                      {themes.map((theme) => {
-                        return (
-                          <option value={theme} key={theme}>
-                            {theme}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </li>
+
+                  <select data-choose-theme className="select select-ghost ">
+                    {themes.map((theme) => {
+                      return (
+                        <option value={theme} key={theme}>
+                          {theme}
+                        </option>
+                      );
+                    })}
+                  </select>
+
                   <li>
                     <button className="btn btn-error" onClick={handleLogout}>
                       Logout
