@@ -194,8 +194,7 @@ export default function Profile() {
             </table>
           ) : (
             <>
-              Loading Profile
-              <progress className="progress w-full "></progress>
+              <div className="btn btn-ghost loading">Loading Profile</div>
             </>
           )}
         </div>
@@ -231,8 +230,7 @@ export default function Profile() {
             </table>
           ) : (
             <>
-              Loading Inventory
-              <progress className="progress w-full "></progress>
+              <div className="btn btn-ghost loading">Loading Inventory</div>
             </>
           )}
         </div>

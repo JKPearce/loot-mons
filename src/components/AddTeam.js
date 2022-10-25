@@ -261,7 +261,7 @@ const AddTeam = () => {
             </button>
             <button
               disabled={loading}
-              className="btn btn-success btn-md"
+              className={`btn btn-success btn-md ${loading && "loading"}`}
               type={"submit"}
             >
               {loading ? `Loading...` : `Save`}

@@ -77,7 +77,10 @@ export default function Teams() {
                       <>
                         <button
                           className="btn btn-error "
-                          onClick={() => deleteTeam(team)}
+                          onClick={() => {
+                            deleteTeam(team);
+                            setConfirmDelete(false);
+                          }}
                         >
                           YES
                         </button>
