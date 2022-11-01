@@ -104,9 +104,15 @@ export function InventoryProvider({ children }) {
   }
 
   function removeCredits(amount) {
-    updateDoc(doc(db, `users/${currentUser.uid}/`), {
+    return updateDoc(doc(db, `users/${currentUser.uid}/`), {
       credits: increment(-amount),
       boxes_opened: increment(1),
+    });
+  }
+
+  function updateUserProfile(key, value) {
+    return updateDoc(doc(db, `users/${currentUser.uid}/`), {
+      [key]: value,
     });
   }
 
@@ -178,6 +184,8 @@ export function InventoryProvider({ children }) {
     addAbility,
     removeCredits,
     resetNewItem,
+    updateUserProfile,
+    setNewItem,
   };
   return (
     <InventoryContext.Provider value={value}>
