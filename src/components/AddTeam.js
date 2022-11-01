@@ -92,6 +92,7 @@ const AddTeam = () => {
                   key={uniqid()}
                   value={move.name}
                   disabled={remaining(move, "moves") <= 0 ? true : false}
+                  hidden={remaining(move, "moves") <= 0 ? true : false}
                 >
                   {`${move.name} (${remaining(move, "moves")})`}
                 </option>
@@ -221,6 +222,11 @@ const AddTeam = () => {
                               <option
                                 key={uniqid()}
                                 disabled={
+                                  remaining(ability, "ability") <= 0
+                                    ? true
+                                    : false
+                                }
+                                hidden={
                                   remaining(ability, "ability") <= 0
                                     ? true
                                     : false
