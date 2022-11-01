@@ -120,6 +120,38 @@ const Home = () => {
     Promise.all(promises).then(resetNewItem()).then(setBundle(bundleItems));
   }
 
+  function openMonBundle() {
+    const promises = [];
+    const bundleItems = [];
+    setBundle();
+
+    if (credits < PRICE.monBundle) {
+      resetNewItem();
+      setCreditError(true);
+      return;
+    } else {
+      setCreditError(false);
+    }
+
+    promises.push(removeCredits(PRICE.monBundle));
+
+    const newPokemon = pokedex.pokemon[randomNumber(pokedex.pokemon.length)];
+    const newAbility =
+      pokedex.abilities[randomNumber(pokedex.abilities.length)];
+
+    promises.push(addPokemon(newPokemon));
+    promises.push(addAbility(newAbility));
+    bundleItems.push(newPokemon);
+    bundleItems.push(newAbility);
+
+    for (let i = 0; i < 4; i++) {
+      const newMove = pokedex.moves[randomNumber(pokedex.moves.length)];
+      bundleItems.push(newMove);
+      promises.push(addMove(newMove));
+    }
+    Promise.all(promises).then(resetNewItem()).then(setBundle(bundleItems));
+  }
+
   function randomNumber(number) {
     return Math.floor(Math.random() * number);
   }
@@ -177,6 +209,12 @@ const Home = () => {
               LootCreds)
             </button>
           </div>
+          <button
+            className="btn btn-md btn-primary"
+            onClick={() => openMonBundle()}
+          >
+            Open Mon Bundle ({PRICE.monBundle} LootCreds)
+          </button>
           <button
             className="btn btn-md btn-accent"
             onClick={() => openSingleBox("pokemon")}
