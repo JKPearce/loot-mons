@@ -54,7 +54,17 @@ export function PokedexProvider({ children }) {
       "https://pokeapi.co/api/v2/ability/?limit=100000&offset=0"
     )
       .then((response) => response.json())
-      .then((data) => data.results);
+      .then((data) => {
+        //filter out abilities and only return ones that are valid
+        const abilities = [];
+        data.results.forEach((ability) => {
+          fetch(ability.url)
+            .then((response) => response.json())
+            .then((data) => data.is_main_series && abilities.push(data));
+        });
+        return abilities;
+      });
+
     return abilities;
   }
 
