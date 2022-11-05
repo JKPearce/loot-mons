@@ -40,10 +40,10 @@ export function PokedexProvider({ children }) {
         moveData[move].isZ
         //|| moveData[move].isNonstandard === "LGPE"
       ) {
-        return;
+        //do nothing
+      } else {
+        moves.push(moveData[move]);
       }
-
-      moves.push(moveData[move]);
     }
     return moves;
   }
