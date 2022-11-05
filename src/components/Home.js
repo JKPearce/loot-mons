@@ -32,7 +32,7 @@ const Home = () => {
     } else {
       setCreditError(false);
     }
-    console.log(pokedex);
+
     const num = randomNumber(pokedex[boxType].length);
     const newItem = pokedex[boxType][num];
 
