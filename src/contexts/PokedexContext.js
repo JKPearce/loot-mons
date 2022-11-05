@@ -34,6 +34,15 @@ export function PokedexProvider({ children }) {
 
     const moves = [];
     for (const move in moveData) {
+      //remove moves from the list
+      if (
+        moveData[move].isMax ||
+        moveData[move].isZ
+        //|| moveData[move].isNonstandard === "LGPE"
+      ) {
+        return;
+      }
+
       moves.push(moveData[move]);
     }
     return moves;
